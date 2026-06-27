@@ -1,0 +1,26 @@
+{
+  "mode": "dry-run",
+  "seed_origin": "etapa_1a_controlled_csv_seed",
+  "file": "data/seeds/proyecto_listados_normalizado.csv",
+  "started_at": "2026-06-27T13:16:34.993Z",
+  "finished_at": "2026-06-27T13:16:35.040Z",
+  "rows_processed": 1895,
+  "rows_inserted": 1893,
+  "rows_skipped": 2,
+  "rows_skipped_existing": 0,
+  "rows_skipped_no_identity": 2,
+  "authorities_created": 1,
+  "documents_created": 17,
+  "lists_created": 16,
+  "ingredients_created": 1787,
+  "synonyms_created": 1865,
+  "rules_created": 1893,
+  "restrictions_created": 443,
+  "rule_versions_created": 1893,
+  "needs_review_count": 239,
+  "errors": [],
+  "warnings": [
+    "Sin identidad deduplicable: record_id=R01454",
+    "Sin identidad deduplicable: record_id=R01586"
+  ]
+}

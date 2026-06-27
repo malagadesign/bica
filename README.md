@@ -1,36 +1,52 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Cosing AR
 
-## Getting Started
+Plataforma SaaS regulatoria para consulta de ingredientes y normativas cosméticas.
 
-First, run the development server:
+**Stack:** Next.js 15 · React 19 · TypeScript · Tailwind · shadcn/ui · Supabase · Vercel
+
+**Contrato arquitectónico:** [`docs/ARCHITECTURE_FREEZE.md`](docs/ARCHITECTURE_FREEZE.md)
+
+## Requisitos
+
+- Node.js 20+
+- npm
+- Cuenta [Supabase](https://supabase.com) (proyecto `cosing-ar`)
+- Cuenta [Vercel](https://vercel.com) (deploy)
+
+## Inicio rápido
 
 ```bash
+cp .env.example .env.local
+# Completar variables Supabase en .env.local
+
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abrir [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Comando | Descripción |
+|---------|-------------|
+| `npm run dev` | Servidor de desarrollo |
+| `npm run build` | Build de producción |
+| `npm run start` | Servidor de producción |
+| `npm run lint` | ESLint |
 
-## Learn More
+## Documentación
 
-To learn more about Next.js, take a look at the following resources:
+| Documento | Contenido |
+|-----------|-----------|
+| [`docs/SETUP.md`](docs/SETUP.md) | Configuración local + Supabase |
+| [`docs/DEPLOY.md`](docs/DEPLOY.md) | Deploy en Vercel |
+| [`docs/PRODUCT.md`](docs/PRODUCT.md) | Visión de producto |
+| [`docs/ARCHITECTURE_FREEZE.md`](docs/ARCHITECTURE_FREEZE.md) | Contrato arquitectónico |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Etapa actual
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+**Etapa 0** — Fundación: landing, auth, dashboard, schema SQL inicial.
 
-## Deploy on Vercel
+## Legacy
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+El proyecto Laravel anterior vive en `../cosing-ar/` — no se utiliza ni modifica.
