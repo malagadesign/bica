@@ -1,22 +1,30 @@
 import Link from "next/link";
+import { ChevronRight, Scale } from "lucide-react";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { getIngredientKnowledgeProfile } from "@/lib/data/ingredient-knowledge";
+import { getRegulatoryListBySlug } from "@/lib/data/regulatory-lists";
 import { AppHeader } from "@/components/layout/app-header";
+import { Breadcrumbs } from "@/components/layout/breadcrumbs";
+import { RegulatorySnapshot } from "@/components/knowledge/regulatory-snapshot";
+import { IngredientKnowledgeHeader } from "@/components/knowledge/ingredient-knowledge-header";
+import { FeaturedDocuments } from "@/components/knowledge/featured-documents";
+import { RegulatoryTimeline } from "@/components/knowledge/regulatory-timeline";
+import { CrossReferences } from "@/components/knowledge/cross-references";
 import {
-  formatRuleStatus,
-  getIngredientDisplayName,
-} from "@/lib/ingredient-display";
-import { buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { unwrapJoin } from "@/lib/supabase-joins";
+  NeedsReviewBadge,
+  RuleStatusBadge,
+} from "@/components/regulatory/status-badges";
+import { EmptyState } from "@/components/ui/empty-state";
 
 export const dynamic = "force-dynamic";
 
 type Props = {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ from?: string }>;
 };
 
-export default async function IngredientDetailPage({ params }: Props) {
+export default async function IngredientKnowledgePage({ params, searchParams }: Props) {
   const supabase = await createClient();
   const {
     data: { user },
@@ -25,224 +33,121 @@ export default async function IngredientDetailPage({ params }: Props) {
   if (!user) redirect("/login");
 
   const { id } = await params;
+  const sp = await searchParams;
+  const fromListSlug = sp.from;
 
-  const { data: ingredient, error } = await supabase
-    .from("ingredients")
-    .select("*")
-    .eq("id", id)
-    .maybeSingle();
+  const profile = await getIngredientKnowledgeProfile(supabase, id);
+  if (!profile) notFound();
 
-  if (error || !ingredient) notFound();
+  const fromList = fromListSlug
+    ? await getRegulatoryListBySlug(supabase, fromListSlug)
+    : null;
 
-  const { data: rules } = await supabase
-    .from("ingredient_rules")
-    .select(
-      `
-      id,
-      rule_status,
-      source_record_id,
-      entry_number_ar,
-      entry_number_eu,
-      conditions_raw,
-      needs_review,
-      review_reason,
-      regulatory_lists ( name, code ),
-      regulatory_documents ( title, document_number, mercosur_reference ),
-      restrictions (
-        id,
-        application_area,
-        max_concentration,
-        concentration_unit,
-        expressed_as,
-        limitation_text,
-        warning_text,
-        condition_text,
-        notes
-      )
-    `
-    )
-    .eq("ingredient_id", id)
-    .order("created_at", { ascending: true });
+  const breadcrumbItems = fromList
+    ? [
+        { label: "Inicio", href: "/app/dashboard" },
+        { label: "Listados", href: "/app/lists" },
+        { label: fromList.name, href: `/app/lists/${fromListSlug}` },
+        { label: profile.displayName },
+      ]
+    : [
+        { label: "Inicio", href: "/app/dashboard" },
+        { label: "Ingredientes regulados", href: "/app/ingredients" },
+        { label: profile.displayName },
+      ];
 
   return (
     <>
-      <AppHeader title={getIngredientDisplayName(ingredient)} userEmail={user.email} />
-      <main className="flex flex-1 flex-col gap-6 p-6">
-        <div>
-          <Link
-            href="/app/ingredients"
-            className={cn(
-              buttonVariants({ variant: "ghost", size: "sm" }),
-              "mb-2 -ml-2"
+      <AppHeader title={profile.displayName} userEmail={user.email} />
+      <main className="flex flex-1 flex-col px-6 py-8">
+        <div className="mx-auto w-full max-w-4xl space-y-12">
+          <div className="animate-fade-in-up space-y-8">
+            <Breadcrumbs items={breadcrumbItems} />
+            <IngredientKnowledgeHeader profile={profile} />
+          </div>
+
+          <RegulatorySnapshot profile={profile} className="animate-fade-in-up" />
+
+          <FeaturedDocuments
+            documents={profile.documents}
+            className="animate-fade-in-up"
+          />
+
+          <section className="animate-fade-in-up space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-semibold tracking-tight">
+                Reglas regulatorias
+              </h2>
+              <span className="text-sm text-muted-foreground">
+                {profile.ruleCount}{" "}
+                {profile.ruleCount === 1 ? "regla" : "reglas"}
+              </span>
+            </div>
+
+            {profile.rules.length === 0 ? (
+              <EmptyState
+                icon={Scale}
+                title="Sin reglas asociadas"
+                description="Este ingrediente todavía no tiene reglas normativas cargadas."
+                className="py-10"
+              />
+            ) : (
+              <div className="space-y-3">
+                {profile.rules.map((rule, index) => (
+                  <Link
+                    key={rule.id}
+                    href={`/app/rules/${rule.id}`}
+                    style={{ animationDelay: `${Math.min(index, 8) * 40}ms` }}
+                    className="animate-fade-in-up group flex items-center justify-between gap-4 rounded-xl border border-border/60 bg-card p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-border hover:bg-accent/20 hover:shadow-sm"
+                  >
+                    <div className="min-w-0 flex-1 space-y-1">
+                      <p className="font-medium">{rule.listName}</p>
+                      <p className="truncate text-sm text-muted-foreground">
+                        {rule.document?.document_number ?? rule.document?.title}
+                        {rule.entry_number_ar
+                          ? ` · Nº ${rule.entry_number_ar}`
+                          : ""}
+                      </p>
+                      {rule.restrictionCount > 0 && (
+                        <p className="text-xs text-muted-foreground">
+                          {rule.restrictionCount}{" "}
+                          {rule.restrictionCount === 1
+                            ? "restricción"
+                            : "restricciones"}
+                        </p>
+                      )}
+                    </div>
+                    <div className="flex shrink-0 items-center gap-2">
+                      <RuleStatusBadge status={rule.rule_status} />
+                      {rule.needs_review && <NeedsReviewBadge />}
+                      <ChevronRight className="size-4 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
+                    </div>
+                  </Link>
+                ))}
+              </div>
             )}
-          >
-            ← Volver al listado
-          </Link>
-          <h1 className="text-2xl font-semibold tracking-tight">
-            {getIngredientDisplayName(ingredient)}
-          </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Detalle de ingrediente — Etapa 1A
-          </p>
-        </div>
+          </section>
 
-        <section className="grid gap-4 rounded-lg border p-4 sm:grid-cols-2 lg:grid-cols-4">
-          <div>
-            <p className="text-xs text-muted-foreground">INCI</p>
-            <p className="font-medium">{ingredient.inci_name ?? "—"}</p>
-          </div>
-          <div>
-            <p className="text-xs text-muted-foreground">Nombre químico</p>
-            <p className="font-medium">{ingredient.chemical_name ?? "—"}</p>
-          </div>
-          <div>
-            <p className="text-xs text-muted-foreground">CAS</p>
-            <p className="font-medium">{ingredient.cas_number ?? "—"}</p>
-          </div>
-          <div>
-            <p className="text-xs text-muted-foreground">Color Index</p>
-            <p className="font-medium">{ingredient.color_index ?? "—"}</p>
-          </div>
-          <div>
-            <p className="text-xs text-muted-foreground">EINECS</p>
-            <p className="font-medium">{ingredient.einecs ?? "—"}</p>
-          </div>
-          <div>
-            <p className="text-xs text-muted-foreground">Función / listado</p>
-            <p className="font-medium">{ingredient.function ?? "—"}</p>
-          </div>
-        </section>
-
-        <section className="space-y-4">
-          <h2 className="text-lg font-semibold">
-            Reglas normativas ({rules?.length ?? 0})
-          </h2>
-
-          {!rules?.length && (
-            <p className="text-sm text-muted-foreground">
-              Este ingrediente no tiene reglas cargadas.
-            </p>
+          {profile.synonyms.length > 0 && (
+            <section className="animate-fade-in-up space-y-4">
+              <h2 className="text-lg font-semibold tracking-tight">Sinónimos</h2>
+              <div className="flex flex-wrap gap-2">
+                {profile.synonyms.map((syn) => (
+                  <span
+                    key={`${syn.synonym}-${syn.synonym_type}`}
+                    className="rounded-lg bg-muted/60 px-3 py-1.5 text-sm"
+                  >
+                    {syn.synonym}
+                  </span>
+                ))}
+              </div>
+            </section>
           )}
 
-          {rules?.map((rule) => {
-            const list = unwrapJoin(rule.regulatory_lists);
-            const doc = unwrapJoin(rule.regulatory_documents);
-            const restrictions = (rule.restrictions ?? []) as Array<{
-              id: string;
-              application_area: string | null;
-              max_concentration: number | null;
-              concentration_unit: string | null;
-              expressed_as: string | null;
-              limitation_text: string | null;
-              warning_text: string | null;
-              condition_text: string | null;
-              notes: string | null;
-            }>;
+          <RegulatoryTimeline events={profile.timeline} />
 
-            return (
-              <article
-                key={rule.id}
-                className="space-y-3 rounded-lg border p-4"
-              >
-                <div className="flex flex-wrap items-start justify-between gap-2">
-                  <div>
-                    <p className="font-medium">{list?.name ?? "Lista"}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {doc?.document_number ?? doc?.title}
-                      {doc?.mercosur_reference
-                        ? ` · ${doc.mercosur_reference}`
-                        : ""}
-                    </p>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    <span className="rounded-full bg-muted px-2 py-0.5 text-xs capitalize">
-                      {formatRuleStatus(rule.rule_status)}
-                    </span>
-                    {rule.needs_review && (
-                      <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs text-amber-900 dark:bg-amber-950 dark:text-amber-100">
-                        needs_review
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                <dl className="grid gap-2 text-sm sm:grid-cols-2">
-                  <div>
-                    <dt className="text-muted-foreground">Nº AR</dt>
-                    <dd>{rule.entry_number_ar ?? "—"}</dd>
-                  </div>
-                  <div>
-                    <dt className="text-muted-foreground">Nº EU</dt>
-                    <dd>{rule.entry_number_eu ?? "—"}</dd>
-                  </div>
-                  <div>
-                    <dt className="text-muted-foreground">source_record_id</dt>
-                    <dd className="font-mono text-xs">{rule.source_record_id}</dd>
-                  </div>
-                </dl>
-
-                {rule.conditions_raw && (
-                  <div className="text-sm">
-                    <p className="text-muted-foreground">Condiciones (raw)</p>
-                    <p className="whitespace-pre-wrap">{rule.conditions_raw}</p>
-                  </div>
-                )}
-
-                {rule.needs_review && rule.review_reason && (
-                  <div className="rounded-md border border-amber-200 bg-amber-50 p-3 text-sm dark:border-amber-900 dark:bg-amber-950/40">
-                    <p className="font-medium text-amber-900 dark:text-amber-100">
-                      Motivo de revisión
-                    </p>
-                    <p className="mt-1">{rule.review_reason}</p>
-                  </div>
-                )}
-
-                {restrictions.length > 0 ? (
-                  <div className="space-y-2">
-                    <p className="text-sm font-medium">
-                      Restricciones ({restrictions.length})
-                    </p>
-                    {restrictions.map((r) => (
-                      <div
-                        key={r.id}
-                        className="rounded-md bg-muted/40 p-3 text-sm"
-                      >
-                        {r.application_area && (
-                          <p>
-                            <span className="text-muted-foreground">Área: </span>
-                            {r.application_area}
-                          </p>
-                        )}
-                        {r.max_concentration != null && (
-                          <p>
-                            <span className="text-muted-foreground">Máx: </span>
-                            {r.max_concentration}
-                            {r.concentration_unit ? ` ${r.concentration_unit}` : ""}
-                            {r.expressed_as ? ` (${r.expressed_as})` : ""}
-                          </p>
-                        )}
-                        {r.limitation_text && (
-                          <p className="mt-1 whitespace-pre-wrap">
-                            {r.limitation_text}
-                          </p>
-                        )}
-                        {r.warning_text && (
-                          <p className="mt-1 whitespace-pre-wrap text-amber-800 dark:text-amber-200">
-                            {r.warning_text}
-                          </p>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-sm text-muted-foreground">
-                    Sin restricciones (válido para listados como Prohibidos).
-                  </p>
-                )}
-              </article>
-            );
-          })}
-        </section>
+          <CrossReferences profile={profile} />
+        </div>
       </main>
     </>
   );

@@ -1,0 +1,9 @@
+[
+  { "id": "disposicion", "label": "Disposición" },
+  { "id": "resolucion", "label": "Resolución" },
+  { "id": "anexo", "label": "Anexo" },
+  { "id": "guia-tecnica", "label": "Guía Técnica" },
+  { "id": "formulario", "label": "Formulario" },
+  { "id": "boletin", "label": "Boletín Oficial" },
+  { "id": "otro", "label": "Otro" }
+]

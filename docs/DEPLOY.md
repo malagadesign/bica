@@ -15,12 +15,14 @@ Subir `cosing-ar-next` a GitHub (o conectar directorio local).
 
 En Vercel → Project → Settings → Environment Variables:
 
-| Variable | Production | Preview | Development |
-|----------|------------|---------|-------------|
-| `NEXT_PUBLIC_SUPABASE_URL` | ✅ | ✅ | ✅ |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | ✅ | ✅ | ✅ |
-| `NEXT_PUBLIC_APP_URL` | `https://tu-dominio.vercel.app` | auto | `http://localhost:3000` |
-| `SUPABASE_SERVICE_ROLE_KEY` | opcional | opcional | opcional |
+| Variable | Production | Preview | Development | Notas |
+|----------|------------|---------|-------------|-------|
+| `NEXT_PUBLIC_SUPABASE_URL` | ✅ | ✅ | ✅ | Obligatoria |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | ✅ | ✅ | ✅ | Proyectos nuevos (sb_publishable_...) |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | alt. | alt. | alt. | Legacy JWT — una de las dos keys anteriores |
+| `NEXT_PUBLIC_APP_URL` | ✅ | preview URL | `http://localhost:3000` | URL pública de la app (Auth callbacks) |
+| `SUPABASE_SERVICE_ROLE_KEY` | ✅ | ✅ | ✅ | Solo servidor — admin, publicar normativas |
+| `PUBLIC_REGISTRATION_ENABLED` | opcional | opcional | opcional | `true` / `false` (default: `true`) |
 
 **Nunca** agregar `SUPABASE_SERVICE_ROLE_KEY` a variables `NEXT_PUBLIC_*`.
 

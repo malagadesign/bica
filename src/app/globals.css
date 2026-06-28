@@ -10,6 +10,8 @@
   --font-sans: var(--font-sans);
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-sans);
+  --font-serif: var(--font-serif);
+  --font-editorial: var(--font-geist);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -48,73 +50,165 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/* -------------------------------------------------------------------------- */
+/* BICA Brand Tokens                                                          */
+/* -------------------------------------------------------------------------- */
+
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  /* Core palette */
+  --bica-primary: oklch(0.32 0.06 258);
+  --bica-primary-foreground: oklch(0.98 0.005 258);
+  --bica-secondary: oklch(0.45 0.07 258);
+  --bica-secondary-foreground: oklch(0.98 0.005 258);
+  --bica-accent: oklch(0.52 0.11 258);
+  --bica-accent-foreground: oklch(0.98 0.005 258);
+  --bica-surface: oklch(0.985 0.006 258);
+  --bica-muted: oklch(0.955 0.012 258);
+  --bica-muted-foreground: oklch(0.48 0.03 258);
+  --bica-border: oklch(0.90 0.015 258);
+  --bica-card: oklch(1 0 0);
+  --bica-success: oklch(0.48 0.09 155);
+  --bica-warning: oklch(0.62 0.11 75);
+  --bica-danger: oklch(0.50 0.14 25);
+  --bica-info: oklch(0.48 0.08 258);
+
+  /* Semantic mapping */
+  --background: var(--bica-surface);
+  --foreground: oklch(0.22 0.04 258);
+  --card: var(--bica-card);
+  --card-foreground: var(--foreground);
+  --popover: var(--bica-card);
+  --popover-foreground: var(--foreground);
+  --primary: var(--bica-primary);
+  --primary-foreground: var(--bica-primary-foreground);
+  --secondary: var(--bica-muted);
+  --secondary-foreground: var(--bica-primary);
+  --muted: var(--bica-muted);
+  --muted-foreground: var(--bica-muted-foreground);
+  --accent: oklch(0.94 0.02 258);
+  --accent-foreground: var(--bica-primary);
+  --destructive: var(--bica-danger);
+  --border: var(--bica-border);
+  --input: var(--bica-border);
+  --ring: var(--bica-accent);
+  --radius: 0.75rem;
+
+  /* Sidebar — institutional deep blue */
+  --sidebar: oklch(0.24 0.045 258);
+  --sidebar-foreground: oklch(0.92 0.01 258);
+  --sidebar-primary: var(--bica-accent);
+  --sidebar-primary-foreground: oklch(0.98 0.005 258);
+  --sidebar-accent: oklch(0.30 0.05 258);
+  --sidebar-accent-foreground: oklch(0.95 0.01 258);
+  --sidebar-border: oklch(0.32 0.04 258);
+  --sidebar-ring: var(--bica-accent);
+
+  /* Header */
+  --header-bg: var(--bica-card);
+  --header-border: var(--bica-border);
+
+  /* Search */
+  --search-bg: var(--bica-card);
+  --search-border: var(--bica-border);
+  --search-ring: var(--bica-accent);
+
+  /* Snapshot — signature component */
+  --snapshot-bg-from: oklch(0.99 0.008 258);
+  --snapshot-bg-to: oklch(0.96 0.015 258);
+  --snapshot-border: oklch(0.88 0.025 258);
+  --snapshot-accent: var(--bica-primary);
+
+  /* Timeline */
+  --timeline-line: oklch(0.85 0.02 258);
+  --timeline-dot: var(--bica-accent);
+  --timeline-year: var(--bica-secondary);
+
+  /* Badge tokens */
+  --badge-success-bg: oklch(0.94 0.03 155);
+  --badge-success-text: oklch(0.38 0.08 155);
+  --badge-success-ring: oklch(0.85 0.04 155);
+  --badge-warning-bg: oklch(0.95 0.04 75);
+  --badge-warning-text: oklch(0.42 0.09 75);
+  --badge-warning-ring: oklch(0.86 0.05 75);
+  --badge-danger-bg: oklch(0.95 0.03 25);
+  --badge-danger-text: oklch(0.42 0.12 25);
+  --badge-danger-ring: oklch(0.86 0.05 25);
+  --badge-info-bg: oklch(0.94 0.025 258);
+  --badge-info-text: oklch(0.38 0.07 258);
+  --badge-info-ring: oklch(0.85 0.03 258);
+  --badge-muted-bg: oklch(0.96 0.01 258);
+  --badge-muted-text: oklch(0.48 0.03 258);
+  --badge-muted-ring: oklch(0.88 0.015 258);
+
+  /* Card system */
+  --card-shadow: 0 1px 2px oklch(0.22 0.04 258 / 4%), 0 4px 16px oklch(0.22 0.04 258 / 4%);
+  --card-shadow-hover: 0 2px 4px oklch(0.22 0.04 258 / 6%), 0 8px 24px oklch(0.22 0.04 258 / 8%);
+
+  /* Charts */
+  --chart-1: var(--bica-primary);
+  --chart-2: var(--bica-secondary);
+  --chart-3: var(--bica-accent);
+  --chart-4: var(--bica-success);
+  --chart-5: var(--bica-warning);
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --bica-surface: oklch(0.16 0.025 258);
+  --bica-muted: oklch(0.22 0.03 258);
+  --bica-muted-foreground: oklch(0.68 0.02 258);
+  --bica-border: oklch(0.30 0.03 258);
+  --bica-card: oklch(0.20 0.03 258);
+
+  --background: var(--bica-surface);
+  --foreground: oklch(0.95 0.01 258);
+  --card: var(--bica-card);
+  --card-foreground: var(--foreground);
+  --popover: var(--bica-card);
+  --popover-foreground: var(--foreground);
+  --primary: oklch(0.72 0.08 258);
+  --primary-foreground: oklch(0.18 0.04 258);
+  --secondary: var(--bica-muted);
+  --secondary-foreground: var(--foreground);
+  --muted: var(--bica-muted);
+  --muted-foreground: var(--bica-muted-foreground);
+  --accent: oklch(0.26 0.035 258);
+  --accent-foreground: var(--foreground);
+  --destructive: oklch(0.65 0.14 25);
+  --border: var(--bica-border);
+  --input: var(--bica-border);
+  --ring: oklch(0.55 0.10 258);
+
+  --sidebar: oklch(0.14 0.03 258);
+  --sidebar-foreground: oklch(0.92 0.01 258);
+  --sidebar-primary: oklch(0.58 0.10 258);
+  --sidebar-primary-foreground: oklch(0.98 0.005 258);
+  --sidebar-accent: oklch(0.22 0.04 258);
+  --sidebar-accent-foreground: oklch(0.95 0.01 258);
+  --sidebar-border: oklch(0.24 0.03 258);
+  --sidebar-ring: oklch(0.55 0.10 258);
+
+  --snapshot-bg-from: oklch(0.20 0.03 258);
+  --snapshot-bg-to: oklch(0.17 0.025 258);
+  --snapshot-border: oklch(0.28 0.035 258);
+
+  --badge-success-bg: oklch(0.28 0.05 155);
+  --badge-success-text: oklch(0.82 0.06 155);
+  --badge-success-ring: oklch(0.35 0.06 155);
+  --badge-warning-bg: oklch(0.30 0.05 75);
+  --badge-warning-text: oklch(0.85 0.06 75);
+  --badge-warning-ring: oklch(0.38 0.06 75);
+  --badge-danger-bg: oklch(0.30 0.06 25);
+  --badge-danger-text: oklch(0.85 0.06 25);
+  --badge-danger-ring: oklch(0.38 0.07 25);
+  --badge-info-bg: oklch(0.26 0.04 258);
+  --badge-info-text: oklch(0.82 0.05 258);
+  --badge-info-ring: oklch(0.34 0.05 258);
+  --badge-muted-bg: oklch(0.24 0.025 258);
+  --badge-muted-text: oklch(0.72 0.02 258);
+  --badge-muted-ring: oklch(0.32 0.03 258);
+
+  --card-shadow: 0 1px 2px oklch(0 0 0 / 20%), 0 4px 16px oklch(0 0 0 / 15%);
+  --card-shadow-hover: 0 2px 4px oklch(0 0 0 / 25%), 0 8px 24px oklch(0 0 0 / 20%);
 }
 
 @layer base {
@@ -126,5 +220,267 @@
   }
   html {
     @apply font-sans;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* BICA Component Utilities                                                   */
+/* -------------------------------------------------------------------------- */
+
+@layer utilities {
+  .bica-card {
+    @apply rounded-xl border bg-card text-card-foreground;
+    border-color: var(--bica-border);
+    box-shadow: var(--card-shadow);
+  }
+
+  .bica-card-interactive {
+    @apply rounded-xl border bg-card text-card-foreground transition-all duration-200;
+    border-color: var(--bica-border);
+    box-shadow: var(--card-shadow);
+  }
+
+  .bica-card-interactive:hover {
+    box-shadow: var(--card-shadow-hover);
+    border-color: color-mix(in oklch, var(--bica-border), var(--bica-accent) 25%);
+  }
+
+  .bica-snapshot {
+    @apply rounded-2xl border p-6 md:p-8;
+    background: linear-gradient(
+      135deg,
+      var(--snapshot-bg-from) 0%,
+      var(--snapshot-bg-to) 100%
+    );
+    border-color: var(--snapshot-border);
+    box-shadow: var(--card-shadow);
+  }
+
+  .bica-snapshot-label {
+    @apply text-xs font-semibold uppercase tracking-[0.14em];
+    color: var(--snapshot-accent);
+  }
+
+  .bica-section-title {
+    @apply text-lg font-semibold tracking-tight text-foreground;
+  }
+
+  .bica-kicker {
+    @apply text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground;
+  }
+
+  .bica-pill {
+    @apply rounded-full px-3 py-1 text-sm font-medium;
+    background: var(--badge-muted-bg);
+    color: var(--badge-muted-text);
+  }
+
+  .bica-search-shell {
+    @apply rounded-xl border bg-[var(--search-bg)] transition-shadow;
+    border-color: var(--search-border);
+    box-shadow: var(--card-shadow);
+  }
+
+  .bica-search-shell:focus-within {
+    border-color: var(--search-ring);
+    box-shadow: 0 0 0 3px color-mix(in oklch, var(--search-ring), transparent 75%);
+  }
+
+  .bica-form-label {
+    @apply text-sm font-medium text-foreground;
+  }
+
+  .bica-form-field {
+    @apply space-y-2;
+  }
+
+  .bica-form-textarea {
+    @apply w-full rounded-lg border bg-background px-3 py-2.5 text-sm outline-none transition-colors;
+    border-color: var(--bica-border);
+  }
+
+  .bica-form-textarea:focus-visible {
+    border-color: var(--bica-accent);
+    box-shadow: 0 0 0 3px color-mix(in oklch, var(--bica-accent), transparent 75%);
+  }
+
+  .bica-form-success {
+    @apply text-sm;
+    color: var(--badge-success-text);
+  }
+
+  .bica-callout-info {
+    @apply rounded-xl border border-dashed p-6;
+    border-color: color-mix(in oklch, var(--badge-info-ring), transparent 50%);
+    background: color-mix(in oklch, var(--badge-info-bg), transparent 40%);
+  }
+
+  .bica-callout-warning {
+    @apply rounded-lg border px-4 py-3 text-sm;
+    border-color: color-mix(in oklch, var(--badge-warning-ring), transparent 50%);
+    background: var(--badge-warning-bg);
+    color: var(--badge-warning-text);
+  }
+
+  .bica-skeleton {
+    background: linear-gradient(
+      90deg,
+      var(--bica-muted) 0%,
+      color-mix(in oklch, var(--bica-muted), white 40%) 50%,
+      var(--bica-muted) 100%
+    );
+    background-size: 200% 100%;
+    animation: bica-shimmer 1.5s ease-in-out infinite;
+  }
+
+  @keyframes bica-shimmer {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+
+  .bica-empty-icon {
+    @apply flex size-14 items-center justify-center rounded-2xl;
+    background: color-mix(in oklch, var(--bica-accent), transparent 88%);
+    color: var(--bica-primary);
+  }
+
+  .bica-timeline-line {
+    background: var(--timeline-line);
+  }
+
+  .bica-timeline-dot {
+    background: var(--timeline-dot);
+  }
+
+  .bica-timeline-year {
+    color: var(--timeline-year);
+  }
+
+  .bica-hero-logo img {
+    height: clamp(5rem, 14vw, 6.75rem) !important;
+    max-height: none !important;
+    width: auto !important;
+  }
+
+  .bica-hero-gradient {
+    --hero-fg: oklch(0.97 0.01 258);
+    --hero-muted: oklch(0.82 0.03 258);
+    --hero-kicker: oklch(0.78 0.06 258);
+    --hero-btn-primary-bg: oklch(0.78 0.07 258);
+    --hero-btn-primary-fg: oklch(0.22 0.06 258);
+    --hero-btn-ghost-border: color-mix(in oklch, var(--hero-fg), transparent 62%);
+    --hero-btn-ghost-fg: var(--hero-fg);
+    color: var(--hero-fg);
+    background:
+      radial-gradient(
+        ellipse 95% 85% at 50% 42%,
+        oklch(0.44 0.17 258) 0%,
+        oklch(0.34 0.12 258) 22%,
+        oklch(0.24 0.07 258) 48%,
+        oklch(0.16 0.04 260) 72%,
+        oklch(0.11 0.025 260) 100%
+      );
+  }
+
+  .bica-hero-kicker {
+    @apply text-xs font-medium uppercase tracking-[0.14em];
+    color: var(--hero-kicker);
+  }
+
+  .bica-hero-title {
+    @apply text-4xl font-medium leading-[1.08] tracking-tight sm:text-5xl md:text-6xl;
+    font-family: var(--font-editorial), var(--font-sans), sans-serif;
+    color: var(--hero-fg);
+  }
+
+  .bica-hero-lead {
+    @apply text-lg leading-relaxed;
+    color: color-mix(in oklch, var(--hero-fg), transparent 18%);
+  }
+
+  .bica-hero-btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-8 py-3 text-sm font-medium transition-colors;
+    font-family: var(--font-editorial), var(--font-sans), sans-serif;
+    background: var(--hero-btn-primary-bg);
+    color: var(--hero-btn-primary-fg);
+  }
+
+  .bica-hero-btn-primary:hover {
+    background: color-mix(in oklch, var(--hero-btn-primary-bg), white 14%);
+  }
+
+  .bica-hero-btn-ghost {
+    @apply inline-flex items-center justify-center rounded-full border px-8 py-3 text-sm font-medium transition-colors;
+    font-family: var(--font-editorial), var(--font-sans), sans-serif;
+    border-color: var(--hero-btn-ghost-border);
+    color: var(--hero-btn-ghost-fg);
+    background: transparent;
+  }
+
+  .bica-hero-btn-ghost:hover {
+    background: color-mix(in oklch, var(--hero-fg), transparent 92%);
+    border-color: color-mix(in oklch, var(--hero-fg), transparent 70%);
+  }
+
+  .bica-dashboard-hero {
+    background: linear-gradient(
+      180deg,
+      color-mix(in oklch, var(--bica-primary), transparent 94%) 0%,
+      var(--background) 100%
+    );
+  }
+
+  @keyframes fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fade-in-scale {
+    from {
+      opacity: 0;
+      transform: translateY(-4px) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes shimmer {
+    from {
+      background-position: -200% 0;
+    }
+    to {
+      background-position: 200% 0;
+    }
+  }
+
+  .animate-fade-in-up {
+    animation: fade-in-up 0.35s ease-out both;
+  }
+
+  .animate-fade-in-scale {
+    animation: fade-in-scale 0.2s ease-out both;
+  }
+
+  .animate-shimmer {
+    background: linear-gradient(
+      90deg,
+      var(--muted) 0%,
+      color-mix(in oklch, var(--muted) 60%, white) 50%,
+      var(--muted) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.4s ease-in-out infinite;
   }
 }

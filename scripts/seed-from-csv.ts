@@ -27,7 +27,7 @@ import {
   parseOptionalInt,
   toListCode,
   type CsvRow,
-} from "./seed/normalize";
+} from "../../src/lib/regulatory/csv-normalize";
 import {
   createEmptyReport,
   printReport,
@@ -150,12 +150,29 @@ type CatalogIds = {
 async function loadExistingRecordIds(
   supabase: SupabaseClient
 ): Promise<Set<string>> {
-  const { data, error } = await supabase
-    .from("ingredient_rules")
-    .select("source_record_id");
+  const ids = new Set<string>();
+  const pageSize = 1000;
+  let from = 0;
 
-  if (error) throw error;
-  return new Set((data ?? []).map((r) => r.source_record_id));
+  while (true) {
+    const { data, error } = await supabase
+      .from("ingredient_rules")
+      .select("source_record_id")
+      .order("source_record_id", { ascending: true })
+      .range(from, from + pageSize - 1);
+
+    if (error) throw error;
+    if (!data?.length) break;
+
+    for (const row of data) {
+      ids.add(row.source_record_id);
+    }
+
+    if (data.length < pageSize) break;
+    from += pageSize;
+  }
+
+  return ids;
 }
 
 async function ensureAuthority(
@@ -226,6 +243,9 @@ async function ensureDocument(
     query = mercosur
       ? query.eq("mercosur_reference", mercosur)
       : query.is("mercosur_reference", null);
+    query = sourceLabel
+      ? query.eq("source_label", sourceLabel)
+      : query.is("source_label", null);
 
     const { data: matches } = await query.maybeSingle();
 
@@ -543,7 +563,7 @@ async function processRow(
     conditions_raw: normalizeText(row.conditions_raw) || null,
     needs_review: needsReview,
     review_reason: normalizeText(row.review_reason) || null,
-    import_batch_id: null,
+    regulatory_update_id: null,
   };
 
   if (dryRun) {
@@ -652,12 +672,24 @@ async function main(): Promise<void> {
     existingRecordIds,
   };
 
-  for (const row of filtered) {
+  for (let i = 0; i < filtered.length; i++) {
+    const row = filtered[i];
+    if (!dryRun && (i === 0 || (i + 1) % 50 === 0 || i + 1 === filtered.length)) {
+      const skipped = report.rows_skipped_existing;
+      const inserted = report.rows_inserted;
+      console.log(
+        `[${i + 1}/${filtered.length}] insertadas: ${inserted}, omitidas: ${skipped}, reglas nuevas: ${report.rules_created}`
+      );
+    }
     try {
       await processRow(supabase, row, catalog, dryRun, report);
     } catch (err) {
       const message =
-        err instanceof Error ? err.message : "Error desconocido";
+        err instanceof Error
+          ? err.message
+          : typeof err === "object" && err !== null && "message" in err
+            ? String((err as { message: unknown }).message)
+            : JSON.stringify(err);
       report.errors.push(`record_id=${row.record_id}: ${message}`);
     }
   }

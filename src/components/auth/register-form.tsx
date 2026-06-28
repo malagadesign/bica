@@ -39,6 +39,21 @@ export function RegisterForm() {
       </div>
 
       <div className="space-y-2">
+        <Label htmlFor="whatsapp">WhatsApp</Label>
+        <Input
+          id="whatsapp"
+          name="whatsapp"
+          type="tel"
+          placeholder="+54 9 11 1234-5678"
+          required
+          autoComplete="tel"
+        />
+        <p className="text-xs text-muted-foreground">
+          Incluí código de país para contacto administrativo.
+        </p>
+      </div>
+
+      <div className="space-y-2">
         <Label htmlFor="password">Contraseña</Label>
         <Input
           id="password"
@@ -63,6 +78,10 @@ export function RegisterForm() {
         <Link href="/login" className="text-primary underline-offset-4 hover:underline">
           Ingresá
         </Link>
+      </p>
+
+      <p className="text-center text-xs text-muted-foreground">
+        Tras registrarte, un administrador debe habilitar tu acceso.
       </p>
     </form>
   );

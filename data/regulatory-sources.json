@@ -1,0 +1,27 @@
+[
+  {
+    "id": "anmat",
+    "label": "ANMAT",
+    "description": "Administración Nacional de Medicamentos, Alimentos y Tecnología Médica"
+  },
+  {
+    "id": "mercosur",
+    "label": "MERCOSUR",
+    "description": "Normativa del bloque regional"
+  },
+  {
+    "id": "boletin-oficial",
+    "label": "Boletín Oficial",
+    "description": "Publicación oficial de la República Argentina"
+  },
+  {
+    "id": "argentina-gob-ar",
+    "label": "Argentina.gob.ar",
+    "description": "Portal normativo nacional"
+  },
+  {
+    "id": "carga-manual",
+    "label": "Carga manual",
+    "description": "Incorporación documentada por el equipo BICA"
+  }
+]

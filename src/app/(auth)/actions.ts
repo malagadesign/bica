@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { isPublicRegistrationEnabled } from "@/lib/auth/config";
 import { createClient } from "@/lib/supabase/server";
 
 export type AuthActionState = {
@@ -18,13 +19,23 @@ export async function login(
   const password = formData.get("password") as string;
   const redirectTo = (formData.get("redirectTo") as string) || "/app/dashboard";
 
-  const { error } = await supabase.auth.signInWithPassword({
+  const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
   });
 
   if (error) {
     return { error: error.message };
+  }
+
+  if (data.user) {
+    await supabase
+      .from("profiles")
+      .update({
+        last_login_at: new Date().toISOString(),
+        last_seen_at: new Date().toISOString(),
+      })
+      .eq("id", data.user.id);
   }
 
   revalidatePath("/", "layout");
@@ -35,18 +46,28 @@ export async function register(
   _prevState: AuthActionState,
   formData: FormData
 ): Promise<AuthActionState> {
+  if (!isPublicRegistrationEnabled()) {
+    return { error: "El acceso se gestiona por invitación." };
+  }
+
   const supabase = await createClient();
 
-  const fullName = formData.get("fullName") as string;
-  const email = formData.get("email") as string;
+  const fullName = (formData.get("fullName") as string)?.trim();
+  const whatsapp = (formData.get("whatsapp") as string)?.trim();
+  const email = (formData.get("email") as string)?.trim();
   const password = formData.get("password") as string;
 
-  const { error } = await supabase.auth.signUp({
+  if (!fullName || !whatsapp || !email || !password) {
+    return { error: "Completá todos los campos." };
+  }
+
+  const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
       data: {
         full_name: fullName,
+        whatsapp,
       },
     },
   });
@@ -55,8 +76,19 @@ export async function register(
     return { error: error.message };
   }
 
+  if (data.user) {
+    await supabase
+      .from("profiles")
+      .update({
+        full_name: fullName,
+        whatsapp,
+        access_status: "pending",
+      })
+      .eq("id", data.user.id);
+  }
+
   revalidatePath("/", "layout");
-  redirect("/app/dashboard");
+  redirect("/access-disabled");
 }
 
 export async function logout() {

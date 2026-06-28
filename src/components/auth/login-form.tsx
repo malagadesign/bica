@@ -11,9 +11,13 @@ const initialState: AuthActionState = { error: null };
 
 type LoginFormProps = {
   redirectTo?: string;
+  showRegisterLink?: boolean;
 };
 
-export function LoginForm({ redirectTo = "/app/dashboard" }: LoginFormProps) {
+export function LoginForm({
+  redirectTo = "/app/dashboard",
+  showRegisterLink = true,
+}: LoginFormProps) {
   const [state, formAction, pending] = useActionState(login, initialState);
 
   return (
@@ -51,12 +55,18 @@ export function LoginForm({ redirectTo = "/app/dashboard" }: LoginFormProps) {
         {pending ? "Ingresando…" : "Ingresar"}
       </Button>
 
-      <p className="text-center text-sm text-muted-foreground">
-        ¿No tenés cuenta?{" "}
-        <Link href="/register" className="text-primary underline-offset-4 hover:underline">
-          Registrate
-        </Link>
-      </p>
+      {showRegisterLink ? (
+        <p className="text-center text-sm text-muted-foreground">
+          ¿No tenés cuenta?{" "}
+          <Link href="/register" className="text-primary underline-offset-4 hover:underline">
+            Registrate
+          </Link>
+        </p>
+      ) : (
+        <p className="text-center text-sm text-muted-foreground">
+          El acceso se gestiona por invitación.
+        </p>
+      )}
     </form>
   );
 }

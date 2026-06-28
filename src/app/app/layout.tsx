@@ -1,13 +1,28 @@
-"use client";
+import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
+import { getProfileByUserId, touchLastSeen } from "@/lib/auth/profile";
+import { AppLayoutShell } from "@/components/layout/app-layout-shell";
 
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/layout/app-sidebar";
+export default async function AppLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-export default function AppLayout({ children }: { children: React.ReactNode }) {
+  if (!user) redirect("/login");
+
+  const profile = await getProfileByUserId(supabase, user.id);
+  if (profile) {
+    await touchLastSeen(user.id, profile.last_seen_at);
+  }
+
   return (
-    <SidebarProvider>
-      <AppSidebar />
-      <SidebarInset className="flex min-h-screen flex-col">{children}</SidebarInset>
-    </SidebarProvider>
+    <AppLayoutShell isAdmin={profile?.role === "admin"}>
+      {children}
+    </AppLayoutShell>
   );
 }

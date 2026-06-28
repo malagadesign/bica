@@ -19,6 +19,13 @@ export type Database = {
           id: string;
           full_name: string | null;
           avatar_url: string | null;
+          whatsapp: string | null;
+          role: "admin" | "member";
+          access_status: "active" | "suspended" | "pending";
+          access_expires_at: string | null;
+          last_seen_at: string | null;
+          last_login_at: string | null;
+          notes: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -26,6 +33,27 @@ export type Database = {
           id: string;
         };
         Update: Partial<Database["public"]["Tables"]["profiles"]["Row"]>;
+      };
+      admin_audit_log: {
+        Row: {
+          id: string;
+          admin_id: string;
+          target_user_id: string;
+          action: string;
+          old_value: Json | null;
+          new_value: Json | null;
+          created_at: string;
+        };
+        Insert: Partial<
+          Database["public"]["Tables"]["admin_audit_log"]["Row"]
+        > & {
+          admin_id: string;
+          target_user_id: string;
+          action: string;
+        };
+        Update: Partial<
+          Database["public"]["Tables"]["admin_audit_log"]["Row"]
+        >;
       };
       regulatory_authorities: {
         Row: {

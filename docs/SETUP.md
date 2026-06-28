@@ -51,13 +51,47 @@ Obtener keys en: Supabase Dashboard → **Project Settings** → **API**
 
 1. SQL Editor → ejecutar `supabase/migrations/20250627100000_etapa_1a_core_rules.sql`
 
-### Supabase CLI (alternativa)
+### Supabase CLI (recomendado)
+
+La CLI está instalada como devDependency (`npx supabase ...` o vía npm scripts):
 
 ```bash
-npm install -g supabase
-supabase login
-supabase link --project-ref <project-ref>
-supabase db push
+npx supabase login          # una sola vez por máquina (abre el navegador)
+npm run db:link             # link al proyecto cosing-ar (pide la DB password)
+npm run db:push             # aplica supabase/migrations/ al remoto
+```
+
+## 4c. Conexión directa a Postgres (ABM local)
+
+Para hacer ABM (alta/baja/modificación) por SQL desde tu máquina con `psql`
+o un cliente GUI (TablePlus, DBeaver), completá `DATABASE_URL` en `.env`:
+
+1. Dashboard → **Project Settings** → **Database** → **Connection string**
+2. Elegí **Session pooler** (compatible con IPv4) y copiá la URI
+3. Reemplazá `<DB_PASSWORD>` y `<region>` en `.env`:
+
+```bash
+DATABASE_URL=postgresql://postgres.einnzgvdlmotkjebcadm:<DB_PASSWORD>@aws-0-<region>.pooler.supabase.com:5432/postgres
+```
+
+Conectarte y operar:
+
+```bash
+npm run db:connect          # abre psql contra el remoto
+# o directamente:
+psql "$DATABASE_URL" -c "select count(*) from ingredients;"
+```
+
+> ⚠️ La conexión directa usa el rol `postgres` (superusuario): **bypassea RLS**.
+> Usala solo para tareas administrativas; la app sigue conectándose con la
+> publishable/anon key respetando las políticas.
+
+### Otros comandos útiles
+
+```bash
+npm run db:diff             # diff entre migraciones locales y remoto
+npm run db:pull             # traer cambios del remoto a una migración nueva
+npm run db:types            # regenerar src/types/database.types.ts
 ```
 
 ## 4b. Seed Etapa 1A (carga inicial controlada)
@@ -79,6 +113,16 @@ npm run seed:csv
 ```
 
 El reporte se guarda en `data/seeds/seed-report-*.json`.
+
+### Reparación documento 7885/2022 (si aplica)
+
+Si el seed colapsó Prohibidos/Restrictiva adenda en un solo documento:
+
+```bash
+npx tsx scripts/repair-document-7885.ts
+```
+
+Opcional: aplicar en SQL Editor `supabase/migrations/20250627120000_fix_document_fingerprint.sql` para futuros seeds.
 
 ## 5. Configurar Auth
 

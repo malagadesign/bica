@@ -1,18 +1,23 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { ChevronRight, ClipboardList, CheckCircle2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { AppHeader } from "@/components/layout/app-header";
+import { Breadcrumbs } from "@/components/layout/breadcrumbs";
+import { getIngredientDisplayName } from "@/lib/ingredient-display";
+import { unwrapJoin } from "@/lib/supabase-joins";
 import {
-  formatRuleStatus,
-  getIngredientDisplayName,
-} from "@/lib/ingredient-display";
+  NeedsReviewBadge,
+  RuleStatusBadge,
+} from "@/components/regulatory/status-badges";
+import { EmptyState } from "@/components/ui/empty-state";
+import { ErrorState } from "@/components/ui/error-state";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { unwrapJoin } from "@/lib/supabase-joins";
 
 export const dynamic = "force-dynamic";
 
-const PAGE_SIZE = 50;
+const PAGE_SIZE = 30;
 
 type Props = {
   searchParams: Promise<{ needs_review?: string; page?: string }>;
@@ -38,9 +43,7 @@ export default async function RulesPage({ searchParams }: Props) {
       `
       id,
       rule_status,
-      source_record_id,
       needs_review,
-      review_reason,
       entry_number_ar,
       ingredients ( id, inci_name, chemical_name, color_index, cas_number ),
       regulatory_lists ( name, code ),
@@ -61,9 +64,14 @@ export default async function RulesPage({ searchParams }: Props) {
   if (error) {
     return (
       <>
-        <AppHeader title="Reglas" userEmail={user.email} />
-        <main className="p-6">
-          <p className="text-destructive">Error al cargar reglas: {error.message}</p>
+        <AppHeader title="Reglas regulatorias" userEmail={user.email} />
+        <main className="flex flex-1 flex-col px-6 py-8">
+          <div className="mx-auto w-full max-w-4xl">
+            <ErrorState
+              title="No pudimos cargar las reglas regulatorias"
+              description="Hubo un problema al consultar la base normativa. Intentá de nuevo en unos segundos."
+            />
+          </div>
         </main>
       </>
     );
@@ -74,139 +82,140 @@ export default async function RulesPage({ searchParams }: Props) {
 
   return (
     <>
-      <AppHeader title="Reglas normativas" userEmail={user.email} />
-      <main className="flex flex-1 flex-col gap-6 p-6">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <h1 className="text-2xl font-semibold tracking-tight">
-              Reglas normativas
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              {total.toLocaleString("es-AR")} reglas
-              {onlyReview ? " pendientes de revisión" : ""}
-            </p>
-          </div>
-          <div className="flex gap-2">
-            <Link
-              href="/app/rules"
-              className={cn(
-                buttonVariants({
-                  variant: onlyReview ? "outline" : "default",
-                  size: "sm",
-                })
-              )}
-            >
-              Todas
-            </Link>
-            <Link
-              href="/app/rules?needs_review=true"
-              className={cn(
-                buttonVariants({
-                  variant: onlyReview ? "default" : "outline",
-                  size: "sm",
-                })
-              )}
-            >
-              needs_review
-            </Link>
-          </div>
-        </div>
-
-        <div className="overflow-x-auto rounded-lg border">
-          <table className="w-full text-sm">
-            <thead className="border-b bg-muted/40 text-left">
-              <tr>
-                <th className="px-4 py-3 font-medium">Ingrediente</th>
-                <th className="px-4 py-3 font-medium">Lista</th>
-                <th className="px-4 py-3 font-medium">Estado</th>
-                <th className="px-4 py-3 font-medium">Nº AR</th>
-                <th className="px-4 py-3 font-medium">Revisión</th>
-              </tr>
-            </thead>
-            <tbody>
-              {(rules ?? []).map((rule) => {
-                const ingredient = unwrapJoin(rule.ingredients);
-                const list = unwrapJoin(rule.regulatory_lists);
-
-                return (
-                  <tr key={rule.id} className="border-b last:border-0">
-                    <td className="px-4 py-3">
-                      {ingredient ? (
-                        <Link
-                          href={`/app/ingredients/${ingredient.id}`}
-                          className="font-medium text-primary hover:underline"
-                        >
-                          {getIngredientDisplayName(ingredient)}
-                        </Link>
-                      ) : (
-                        "—"
-                      )}
-                    </td>
-                    <td className="px-4 py-3 text-muted-foreground">
-                      {list?.name ?? "—"}
-                    </td>
-                    <td className="px-4 py-3 capitalize">
-                      {formatRuleStatus(rule.rule_status)}
-                    </td>
-                    <td className="px-4 py-3 text-muted-foreground">
-                      {rule.entry_number_ar ?? "—"}
-                    </td>
-                    <td className="px-4 py-3">
-                      {rule.needs_review ? (
-                        <span
-                          className="text-xs text-amber-800 dark:text-amber-200"
-                          title={rule.review_reason ?? undefined}
-                        >
-                          Sí
-                        </span>
-                      ) : (
-                        <span className="text-xs text-muted-foreground">No</span>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
-              {!rules?.length && (
-                <tr>
-                  <td
-                    colSpan={5}
-                    className="px-4 py-8 text-center text-muted-foreground"
-                  >
-                    {onlyReview
-                      ? "No hay reglas con needs_review. ¿Ejecutaste el seed?"
-                      : "No hay reglas cargadas."}
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        {totalPages > 1 && (
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-muted-foreground">
-              Página {page} de {totalPages}
-            </span>
+      <AppHeader title="Reglas regulatorias" userEmail={user.email} />
+      <main className="flex flex-1 flex-col gap-6 px-6 py-8">
+        <div className="mx-auto w-full max-w-4xl space-y-6">
+          <div className="animate-fade-in-up space-y-3">
+            <Breadcrumbs
+              items={[
+                { label: "Inicio", href: "/app/dashboard" },
+                { label: onlyReview ? "Pendientes de revisión" : "Reglas regulatorias" },
+              ]}
+            />
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <h1 className="text-2xl font-semibold tracking-tight">
+                {onlyReview ? "Pendientes de revisión" : "Reglas regulatorias"}
+              </h1>
+              <p className="text-sm text-muted-foreground">
+                {onlyReview
+                  ? `${total.toLocaleString("es-AR")} reglas requieren validación manual`
+                  : `${total.toLocaleString("es-AR")} reglas en la base`}
+              </p>
+            </div>
             <div className="flex gap-2">
-              {page > 1 && (
-                <Link
-                  href={`/app/rules?page=${page - 1}${onlyReview ? "&needs_review=true" : ""}`}
-                  className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
-                >
-                  Anterior
-                </Link>
-              )}
-              {page < totalPages && (
-                <Link
-                  href={`/app/rules?page=${page + 1}${onlyReview ? "&needs_review=true" : ""}`}
-                  className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
-                >
-                  Siguiente
-                </Link>
-              )}
+              <Link
+                href="/app/rules"
+                className={cn(
+                  buttonVariants({
+                    variant: onlyReview ? "outline" : "default",
+                    size: "sm",
+                  })
+                )}
+              >
+                Todas
+              </Link>
+              <Link
+                href="/app/rules?needs_review=true"
+                className={cn(
+                  buttonVariants({
+                    variant: onlyReview ? "default" : "outline",
+                    size: "sm",
+                  })
+                )}
+              >
+                Pendientes
+              </Link>
+            </div>
             </div>
           </div>
-        )}
+
+          {(rules ?? []).length > 0 ? (
+            <div className="space-y-2">
+              {rules!.map((rule, index) => {
+                const ingredient = unwrapJoin(rule.ingredients);
+                const list = unwrapJoin(rule.regulatory_lists);
+                const doc = unwrapJoin(rule.regulatory_documents);
+
+                return (
+                  <Link
+                    key={rule.id}
+                    href={`/app/rules/${rule.id}`}
+                    style={{ animationDelay: `${Math.min(index, 10) * 35}ms` }}
+                    className="animate-fade-in-up group flex items-center justify-between gap-4 rounded-xl border border-border/60 bg-card p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-border hover:bg-accent/20 hover:shadow-sm"
+                  >
+                    <div className="min-w-0 flex-1">
+                      <p className="font-medium">
+                        {ingredient
+                          ? getIngredientDisplayName(ingredient)
+                          : "Ingrediente no identificado"}
+                      </p>
+                      <p className="mt-0.5 truncate text-sm text-muted-foreground">
+                        {list?.name}
+                        {doc?.document_number
+                          ? ` · ${doc.document_number}`
+                          : doc?.title
+                            ? ` · ${doc.title}`
+                            : ""}
+                      </p>
+                    </div>
+                    <div className="flex shrink-0 items-center gap-2">
+                      <RuleStatusBadge status={rule.rule_status} />
+                      {rule.needs_review && <NeedsReviewBadge />}
+                      <ChevronRight className="size-4 text-muted-foreground opacity-0 transition-all duration-200 group-hover:translate-x-0.5 group-hover:opacity-100" />
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          ) : onlyReview ? (
+            <EmptyState
+              icon={CheckCircle2}
+              title="Nada pendiente por ahora"
+              description="Todas las reglas cargadas fueron revisadas. Cuando haya nuevas importaciones, las excepciones aparecerán acá."
+              action={
+                <Link
+                  href="/app/rules"
+                  className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
+                >
+                  Ver todas las reglas
+                </Link>
+              }
+            />
+          ) : (
+            <EmptyState
+              icon={ClipboardList}
+              title="Sin reglas cargadas"
+              description="Las reglas vinculan cada ingrediente con su listado, documento normativo y restricciones de uso."
+            />
+          )}
+
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-muted-foreground">
+                Página {page} de {totalPages}
+              </span>
+              <div className="flex gap-2">
+                {page > 1 && (
+                  <Link
+                    href={`/app/rules?page=${page - 1}${onlyReview ? "&needs_review=true" : ""}`}
+                    className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
+                  >
+                    Anterior
+                  </Link>
+                )}
+                {page < totalPages && (
+                  <Link
+                    href={`/app/rules?page=${page + 1}${onlyReview ? "&needs_review=true" : ""}`}
+                    className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
+                  >
+                    Siguiente
+                  </Link>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
       </main>
     </>
   );
