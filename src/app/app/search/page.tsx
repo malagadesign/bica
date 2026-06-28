@@ -9,6 +9,7 @@ import { IngredientSearch } from "@/components/search/ingredient-search";
 import { SearchResultRow } from "@/components/search/search-result-row";
 import { EmptyState } from "@/components/ui/empty-state";
 import { ErrorState } from "@/components/ui/error-state";
+import { ContextualKnowledgeLink } from "@/components/knowledge-center/contextual-knowledge-link";
 
 export const dynamic = "force-dynamic";
 
@@ -44,16 +45,25 @@ export default async function SearchPage({ searchParams }: Props) {
       <main className="flex flex-1 flex-col gap-8 px-6 py-8">
         <div className="mx-auto w-full max-w-3xl space-y-6">
           <div className="animate-fade-in-up space-y-3">
-            <Breadcrumbs
-              items={[
-                { label: "Inicio", href: "/app/dashboard" },
-                { label: "Búsqueda" },
-              ]}
-            />
-            <h1 className="text-2xl font-semibold tracking-tight">Búsqueda</h1>
-            <p className="text-sm text-muted-foreground">
-              INCI, CAS, Color Index, sinónimos, listas y restricciones normativas.
-            </p>
+            <div className="flex items-start justify-between gap-4">
+              <div className="space-y-3">
+                <Breadcrumbs
+                  items={[
+                    { label: "Inicio", href: "/app/dashboard" },
+                    { label: "Búsqueda" },
+                  ]}
+                />
+                <h1 className="text-2xl font-semibold tracking-tight">Búsqueda</h1>
+                <p className="text-sm text-muted-foreground">
+                  INCI, CAS, Color Index, sinónimos, listas y restricciones normativas.
+                </p>
+              </div>
+              <ContextualKnowledgeLink
+                href="/app/help/buscar-informacion"
+                label="Cómo buscar"
+                description="Guía de búsqueda regulatoria en BICA"
+              />
+            </div>
           </div>
 
           <IngredientSearch

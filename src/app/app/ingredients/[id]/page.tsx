@@ -16,6 +16,7 @@ import {
   RuleStatusBadge,
 } from "@/components/regulatory/status-badges";
 import { EmptyState } from "@/components/ui/empty-state";
+import { ContextualKnowledgeLink } from "@/components/knowledge-center/contextual-knowledge-link";
 
 export const dynamic = "force-dynamic";
 
@@ -62,7 +63,14 @@ export default async function IngredientKnowledgePage({ params, searchParams }: 
       <main className="flex flex-1 flex-col px-6 py-8">
         <div className="mx-auto w-full max-w-4xl space-y-12">
           <div className="animate-fade-in-up space-y-8">
-            <Breadcrumbs items={breadcrumbItems} />
+            <div className="flex items-start justify-between gap-4">
+              <Breadcrumbs items={breadcrumbItems} />
+              <ContextualKnowledgeLink
+                href="/app/help/interpretar-ficha-regulatoria"
+                label="Interpretar una ficha"
+                description="Guía sobre snapshot, reglas y restricciones"
+              />
+            </div>
             <IngredientKnowledgeHeader profile={profile} />
           </div>
 

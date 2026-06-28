@@ -4,6 +4,7 @@ import { getCurrentProfile } from "@/lib/auth/profile";
 import { AppHeader } from "@/components/layout/app-header";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { RegulatoryUpdateUploadForm } from "@/components/regulatory-updates/upload-form";
+import { ContextualKnowledgeLink } from "@/components/knowledge-center/contextual-knowledge-link";
 
 export const dynamic = "force-dynamic";
 
@@ -22,7 +23,7 @@ export default async function NewRegulatoryUpdatePage() {
       <AppHeader title="Incorporar normativa" userEmail={user.email} />
       <main className="flex flex-1 flex-col gap-8 px-6 py-8">
         <div className="mx-auto w-full max-w-3xl space-y-8">
-          <div className="space-y-3">
+          <div className="flex items-start justify-between gap-4">
             <Breadcrumbs
               items={[
                 { label: "Inicio", href: "/app/dashboard" },
@@ -33,6 +34,11 @@ export default async function NewRegulatoryUpdatePage() {
                 },
                 { label: "Incorporar normativa" },
               ]}
+            />
+            <ContextualKnowledgeLink
+              href="/app/help/admin/incorporar-actualizacion-normativa"
+              label="Incorporar normativa"
+              description="Flujo completo de actualización normativa"
             />
           </div>
           <RegulatoryUpdateUploadForm />

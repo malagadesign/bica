@@ -42,6 +42,7 @@ export async function updateSession(request: NextRequest) {
   const isAppRoute = pathname.startsWith("/app");
   const isAccessDisabledRoute = pathname === "/access-disabled";
   const isAdminRoute = pathname.startsWith("/app/admin");
+  const isHelpAdminRoute = pathname.startsWith("/app/help/admin");
   const isInternalQaRoute = pathname.startsWith("/app/search/qa");
 
   if (!user && (isAppRoute || isAccessDisabledRoute)) {
@@ -79,9 +80,9 @@ export async function updateSession(request: NextRequest) {
       return NextResponse.redirect(url);
     }
 
-    if (isAdminRoute && profile?.role !== "admin") {
+    if ((isAdminRoute || isHelpAdminRoute) && profile?.role !== "admin") {
       const url = request.nextUrl.clone();
-      url.pathname = "/app/dashboard";
+      url.pathname = isHelpAdminRoute ? "/app/help" : "/app/dashboard";
       return NextResponse.redirect(url);
     }
 

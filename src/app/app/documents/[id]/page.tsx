@@ -16,6 +16,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { OFFICIAL_SOURCE_NOTE } from "@/lib/legal/microcopy";
 import { OfficialSourceNote } from "@/components/legal/official-source-note";
+import { ContextualKnowledgeLink } from "@/components/knowledge-center/contextual-knowledge-link";
 
 export const dynamic = "force-dynamic";
 
@@ -50,13 +51,20 @@ export default async function DocumentDetailPage({ params }: Props) {
       <main className="flex flex-1 flex-col gap-8 px-6 py-8">
         <div className="mx-auto w-full max-w-4xl space-y-10">
           <div className="animate-fade-in-up space-y-4">
-            <Breadcrumbs
-              items={[
-                { label: "Inicio", href: "/app/dashboard" },
-                { label: "Documentos", href: "/app/documents" },
-                { label: document.document_number ?? document.title },
-              ]}
-            />
+            <div className="flex items-start justify-between gap-4">
+              <Breadcrumbs
+                items={[
+                  { label: "Inicio", href: "/app/dashboard" },
+                  { label: "Documentos", href: "/app/documents" },
+                  { label: document.document_number ?? document.title },
+                ]}
+              />
+              <ContextualKnowledgeLink
+                href="/app/help/documentos-y-listados"
+                label="Documentos y listados"
+                description="Fuentes oficiales y trazabilidad normativa"
+              />
+            </div>
             <div>
               <h1 className="text-2xl font-semibold tracking-tight leading-snug">
                 {document.title}

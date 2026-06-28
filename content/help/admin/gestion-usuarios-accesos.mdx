@@ -1,0 +1,59 @@
+---
+title: Gestión de usuarios y accesos
+description: Roles, estados de acceso, activación, suspensión y vencimiento en BICA.
+audience: admin
+category: Administración
+priority: P0
+productVersion: "1.0"
+updatedAt: "2026-06-26"
+relatedRoutes:
+  - /app/admin/users
+---
+
+## Modelo de acceso en BICA
+
+BICA utiliza **gestión manual de accesos**. No hay autoservicio comercial de planes ni pagos integrados en la plataforma: los administradores habilitan, suspenden o configuran vencimientos según acuerdos externos.
+
+## Roles
+
+| Rol | Capacidades principales |
+|-----|-------------------------|
+| **Miembro (member)** | Consulta: búsqueda, fichas, documentos, listados, Centro de Conocimiento de usuario |
+| **Administrador (admin)** | Todo lo anterior + workspace editorial, actualizaciones normativas, gestión de usuarios |
+
+Los miembros **no** acceden a artículos ni pantallas de administración.
+
+## Estados de acceso
+
+| Estado | Comportamiento |
+|--------|----------------|
+| **Pendiente (pending)** | Registrado pero sin acceso a `/app` — redirige a acceso deshabilitado |
+| **Activo (active)** | Acceso completo según rol |
+| **Suspendido (suspended)** | Acceso bloqueado hasta reactivación |
+
+## Activación de usuarios
+
+Tras un registro, el usuario queda en **pendiente** hasta que un administrador lo active desde **Usuarios**. Verificá identidad y autorización antes de activar.
+
+## Suspensión
+
+Suspendé accesos cuando el contrato finalice, haya incumplimiento o se requiera bloqueo preventivo. El usuario verá la pantalla de acceso deshabilitado.
+
+## Vencimiento de acceso
+
+Podés definir `access_expires_at` para accesos temporales. Vencido el plazo, el usuario queda bloqueado automáticamente hasta renovación.
+
+## Registro público
+
+Según configuración de la organización, el registro público puede estar habilitado o deshabilitado. Con registro deshabilitado, solo administradores crean usuarios.
+
+## Auditoría básica
+
+El panel de usuarios muestra un registro reciente de acciones administrativas (activaciones, suspensiones, cambios relevantes). Usalo para trazabilidad operativa.
+
+## Buenas prácticas
+
+- Revisá accesos periódicamente.
+- Asigná rol admin solo a operadores editoriales de confianza.
+- Documentá externamente los acuerdos comerciales — BICA no los gestiona.
+- Ante dudas de acceso, verificá estado y fecha de vencimiento antes de escalar.

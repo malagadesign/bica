@@ -16,6 +16,7 @@ import {
   Scale,
   BookOpen,
   FileWarning,
+  Library,
 } from "lucide-react";
 import { BicaLogo } from "@/components/brand/bica-logo";
 import {
@@ -81,6 +82,8 @@ function isActive(match: string, pathname: string): boolean {
       return pathname.startsWith("/app/admin/documents");
     case "profile":
       return pathname === "/app/profile";
+    case "help":
+      return pathname.startsWith("/app/help");
     default:
       return false;
   }
@@ -162,6 +165,28 @@ export function AppSidebar({ isAdmin = false }: AppSidebarProps) {
             </SidebarGroup>
           </>
         )}
+
+        <SidebarSeparator className="my-3 bg-sidebar-border" />
+
+        <SidebarGroup>
+          <SidebarGroupLabel className="px-2 text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-sidebar-foreground/50">
+            Conocimiento
+          </SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  isActive={isActive("help", pathname)}
+                  render={<Link href="/app/help" />}
+                  className="text-sidebar-foreground/80 hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground"
+                >
+                  <Library className="size-4 opacity-80" />
+                  <span>Centro de Conocimiento</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
 
         <SidebarSeparator className="my-3 bg-sidebar-border" />
 

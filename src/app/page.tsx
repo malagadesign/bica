@@ -43,6 +43,9 @@ export default function LandingPage() {
               <Link href="/login" className="bica-hero-btn-ghost">
                 {registrationEnabled ? "Ya tengo cuenta" : "Acceso por invitación"}
               </Link>
+              <Link href="/ayuda" className="bica-hero-btn-ghost">
+                Centro de Conocimiento
+              </Link>
             </div>
           </div>
         </section>
@@ -91,6 +94,10 @@ export default function LandingPage() {
                 <DisclaimerLink className="text-xs text-muted-foreground hover:text-primary" />
               </p>
               <p className="mt-2 text-xs text-muted-foreground">
+                <Link href="/ayuda" className="hover:text-primary">
+                  Centro de Conocimiento
+                </Link>
+                {" · "}
                 © {new Date().getFullYear()} BICA. Plataforma regulatoria cosmética.
               </p>
             </div>

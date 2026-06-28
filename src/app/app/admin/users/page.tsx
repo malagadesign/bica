@@ -9,6 +9,7 @@ import {
 import { AppHeader } from "@/components/layout/app-header";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { UsersPanel } from "@/components/admin/users-panel";
+import { ContextualKnowledgeLink } from "@/components/knowledge-center/contextual-knowledge-link";
 
 export const dynamic = "force-dynamic";
 
@@ -48,13 +49,20 @@ export default async function AdminUsersPage() {
       <main className="flex flex-1 flex-col gap-8 px-6 py-8">
         <div className="mx-auto w-full max-w-4xl space-y-8">
           <div className="animate-fade-in-up space-y-3">
-            <Breadcrumbs
-              items={[
-                { label: "Inicio", href: "/app/dashboard" },
-                { label: "Administración" },
-                { label: "Usuarios" },
-              ]}
-            />
+            <div className="flex items-start justify-between gap-4">
+              <Breadcrumbs
+                items={[
+                  { label: "Inicio", href: "/app/dashboard" },
+                  { label: "Administración" },
+                  { label: "Usuarios" },
+                ]}
+              />
+              <ContextualKnowledgeLink
+                href="/app/help/admin/gestion-usuarios-accesos"
+                label="Gestión de accesos"
+                description="Roles, activación, suspensión y vencimiento"
+              />
+            </div>
             <h1 className="text-2xl font-semibold tracking-tight">Usuarios</h1>
             <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">
               Gestioná el acceso manual: activá cuentas, suspendé usuarios y

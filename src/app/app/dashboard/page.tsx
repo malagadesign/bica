@@ -10,6 +10,7 @@ import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { IngredientSearch } from "@/components/search/ingredient-search";
 import { RegulatoryListCard } from "@/components/regulatory/list-card";
 import { EmptyState } from "@/components/ui/empty-state";
+import { ContextualKnowledgeLink } from "@/components/knowledge-center/contextual-knowledge-link";
 
 export const dynamic = "force-dynamic";
 
@@ -65,7 +66,14 @@ export default async function DashboardPage() {
     <>
       <AppHeader title="Inicio" userEmail={user.email} />
       <main className="flex flex-1 flex-col">
-        <section className="bica-dashboard-hero border-b px-6 py-14 md:py-20">
+        <section className="bica-dashboard-hero relative border-b px-6 py-14 md:py-20">
+          <div className="absolute right-6 top-6">
+            <ContextualKnowledgeLink
+              href="/app/help/primeros-pasos"
+              label="Primeros pasos"
+              description="Orientación para tu primer recorrido en BICA"
+            />
+          </div>
           <div className="mx-auto flex w-full max-w-3xl flex-col items-center gap-8 text-center">
             <div className="animate-fade-in-up w-full space-y-3">
               <Breadcrumbs
