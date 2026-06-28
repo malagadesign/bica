@@ -3,6 +3,7 @@ import { Shield, Scale, BookOpen } from "lucide-react";
 import { BicaLogo } from "@/components/brand/bica-logo";
 import { DisclaimerLink } from "@/components/legal/disclaimer-link";
 import { FOOTER_DISCLAIMER_SHORT } from "@/lib/legal/microcopy";
+import { ThemeSelector } from "@/components/layout/theme-selector";
 
 export default function AuthLayout({
   children,
@@ -41,7 +42,10 @@ export default function AuthLayout({
         </p>
       </div>
 
-      <div className="flex flex-1 flex-col items-center justify-center bg-background px-6 py-12">
+      <div className="relative flex flex-1 flex-col items-center justify-center bg-background px-6 py-12">
+        <div className="absolute right-6 top-6">
+          <ThemeSelector variant="compact" />
+        </div>
         <div className="mb-8 lg:hidden">
           <Link href="/">
             <BicaLogo showDescriptor priority />

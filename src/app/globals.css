@@ -93,16 +93,6 @@
   --ring: var(--bica-accent);
   --radius: 0.75rem;
 
-  /* Sidebar — institutional deep blue */
-  --sidebar: oklch(0.24 0.045 258);
-  --sidebar-foreground: oklch(0.92 0.01 258);
-  --sidebar-primary: var(--bica-accent);
-  --sidebar-primary-foreground: oklch(0.98 0.005 258);
-  --sidebar-accent: oklch(0.30 0.05 258);
-  --sidebar-accent-foreground: oklch(0.95 0.01 258);
-  --sidebar-border: oklch(0.32 0.04 258);
-  --sidebar-ring: var(--bica-accent);
-
   /* Header */
   --header-bg: var(--bica-card);
   --header-border: var(--bica-border);
@@ -177,15 +167,6 @@
   --border: var(--bica-border);
   --input: var(--bica-border);
   --ring: oklch(0.55 0.10 258);
-
-  --sidebar: oklch(0.14 0.03 258);
-  --sidebar-foreground: oklch(0.92 0.01 258);
-  --sidebar-primary: oklch(0.58 0.10 258);
-  --sidebar-primary-foreground: oklch(0.98 0.005 258);
-  --sidebar-accent: oklch(0.22 0.04 258);
-  --sidebar-accent-foreground: oklch(0.95 0.01 258);
-  --sidebar-border: oklch(0.24 0.03 258);
-  --sidebar-ring: oklch(0.55 0.10 258);
 
   --snapshot-bg-from: oklch(0.20 0.03 258);
   --snapshot-bg-to: oklch(0.17 0.025 258);
@@ -488,5 +469,25 @@
     );
     background-size: 200% 100%;
     animation: shimmer 1.4s ease-in-out infinite;
+  }
+
+  /*
+   * Sidebar institucional — siempre oscuro, independiente del tema del board.
+   * El logo usa variante clara (bica-logo-on-dark) sobre este fondo.
+   */
+  .bica-sidebar-chrome {
+    --sidebar: oklch(0.14 0.03 258);
+    --sidebar-foreground: oklch(0.92 0.01 258);
+    --sidebar-primary: oklch(0.58 0.10 258);
+    --sidebar-primary-foreground: oklch(0.98 0.005 258);
+    --sidebar-accent: oklch(0.22 0.04 258);
+    --sidebar-accent-foreground: oklch(0.95 0.01 258);
+    --sidebar-border: oklch(0.24 0.03 258);
+    --sidebar-ring: oklch(0.55 0.10 258);
+  }
+
+  .bica-logo-on-dark {
+    filter: brightness(0) invert(1);
+    opacity: 0.96;
   }
 }

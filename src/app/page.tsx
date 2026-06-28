@@ -5,6 +5,7 @@ import { BicaLogo } from "@/components/brand/bica-logo";
 import { PoweredByEternia } from "@/components/brand/powered-by-eternia";
 import { DisclaimerLink } from "@/components/legal/disclaimer-link";
 import { FOOTER_DISCLAIMER_SHORT } from "@/lib/legal/microcopy";
+import { ThemeSelector } from "@/components/layout/theme-selector";
 
 export default function LandingPage() {
   const registrationEnabled = isPublicRegistrationEnabled();
@@ -88,6 +89,9 @@ export default function LandingPage() {
         <div className="mx-auto max-w-6xl px-6">
           <div className="flex flex-col justify-between gap-8 sm:flex-row sm:items-end">
             <div className="text-left">
+              <div className="mb-4 flex items-center gap-3">
+                <ThemeSelector variant="compact" />
+              </div>
               <BicaLogo height={40} showDescriptor align="start" />
               <p className="mt-4 max-w-md text-xs leading-relaxed text-muted-foreground">
                 {FOOTER_DISCLAIMER_SHORT}{" "}

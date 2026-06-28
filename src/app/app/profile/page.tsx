@@ -8,6 +8,7 @@ import {
   AccessStatusBadge,
   RoleBadge,
 } from "@/components/admin/access-badges";
+import { ThemeSelector } from "@/components/layout/theme-selector";
 
 export const dynamic = "force-dynamic";
 
@@ -53,6 +54,10 @@ export default async function ProfilePage() {
               whatsapp={profile.whatsapp ?? ""}
               email={user.email ?? ""}
             />
+          </div>
+
+          <div className="rounded-xl border bg-card p-6">
+            <ThemeSelector variant="panel" />
           </div>
         </div>
       </main>

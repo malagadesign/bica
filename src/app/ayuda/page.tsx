@@ -8,6 +8,7 @@ import {
 } from "@/lib/knowledge-center/articles";
 import { KnowledgeCategorySection } from "@/components/knowledge-center/knowledge-article-layout";
 import { KnowledgeSearch } from "@/components/knowledge-center/knowledge-search";
+import { ThemeSelector } from "@/components/layout/theme-selector";
 
 export const metadata: Metadata = {
   title: "Centro de Conocimiento — BICA",
@@ -30,12 +31,15 @@ export default function PublicKnowledgeCenterPage() {
           <Link href="/">
             <BicaLogo height={36} showDescriptor />
           </Link>
-          <Link
-            href="/login"
-            className="text-sm text-muted-foreground hover:text-primary"
-          >
-            Ingresar a BICA
-          </Link>
+          <div className="flex items-center gap-3">
+            <ThemeSelector variant="compact" />
+            <Link
+              href="/login"
+              className="text-sm text-muted-foreground hover:text-primary"
+            >
+              Ingresar a BICA
+            </Link>
+          </div>
         </div>
       </header>
 

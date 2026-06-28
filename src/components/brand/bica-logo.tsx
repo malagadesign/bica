@@ -35,7 +35,7 @@ export function BicaLogo({
         className
       )}
     >
-      <BicaLogoImage height={logoHeight} priority={priority} />
+      <BicaLogoImage height={logoHeight} priority={priority} onDark={isInverse} />
       {showDescriptor && (
         <span
           className={cn(

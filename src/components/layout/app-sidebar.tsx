@@ -93,7 +93,7 @@ export function AppSidebar({ isAdmin = false }: AppSidebarProps) {
   const pathname = usePathname();
 
   return (
-    <Sidebar className="border-r-0">
+    <Sidebar className="bica-sidebar-chrome border-r-0">
       <SidebarHeader className="border-b border-sidebar-border px-4 py-5">
         <Link href="/app/dashboard" className="transition-opacity hover:opacity-90">
           <BicaLogo variant="sidebar" />

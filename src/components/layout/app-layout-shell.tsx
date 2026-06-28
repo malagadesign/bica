@@ -16,7 +16,7 @@ export function AppLayoutShell({ children, isAdmin = false }: AppLayoutShellProp
       <Suspense fallback={null}>
         <AppSidebar isAdmin={isAdmin} />
       </Suspense>
-      <SidebarInset className="flex min-h-screen flex-col">
+      <SidebarInset className="flex min-h-screen flex-col bg-background text-foreground">
         {children}
         <AppDisclaimerFooter />
       </SidebarInset>

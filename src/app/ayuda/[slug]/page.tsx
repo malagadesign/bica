@@ -8,6 +8,7 @@ import {
 } from "@/lib/knowledge-center/articles";
 import { KnowledgeArticleLayout } from "@/components/knowledge-center/knowledge-article-layout";
 import { KnowledgeArticleBody } from "@/components/knowledge-center/knowledge-article-body";
+import { ThemeSelector } from "@/components/layout/theme-selector";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -48,12 +49,15 @@ export default async function PublicKnowledgeArticlePage({ params }: Props) {
           <Link href="/">
             <BicaLogo height={36} showDescriptor />
           </Link>
-          <Link
-            href="/login"
-            className="text-sm text-muted-foreground hover:text-primary"
-          >
-            Ingresar
-          </Link>
+          <div className="flex items-center gap-3">
+            <ThemeSelector variant="compact" />
+            <Link
+              href="/login"
+              className="text-sm text-muted-foreground hover:text-primary"
+            >
+              Ingresar
+            </Link>
+          </div>
         </div>
       </header>
 

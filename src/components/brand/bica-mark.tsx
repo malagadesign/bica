@@ -25,12 +25,15 @@ type BicaLogoImageProps = {
   className?: string;
   height?: number;
   priority?: boolean;
+  /** Logo claro para fondos oscuros (sidebar, hero) */
+  onDark?: boolean;
 };
 
 export function BicaLogoImage({
   className,
   height = 40,
   priority = false,
+  onDark = false,
 }: BicaLogoImageProps) {
   const width = Math.round(height * (BICA_LOGO.full.width / BICA_LOGO.full.height));
 
@@ -41,7 +44,11 @@ export function BicaLogoImage({
       width={width}
       height={height}
       priority={priority}
-      className={cn("h-auto w-auto max-w-none object-contain", className)}
+      className={cn(
+        "h-auto w-auto max-w-none object-contain",
+        onDark && "bica-logo-on-dark",
+        className
+      )}
       style={{ height, width: "auto", maxHeight: height }}
     />
   );

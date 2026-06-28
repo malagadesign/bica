@@ -3,6 +3,7 @@
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { LogoutButton } from "@/components/auth/logout-button";
 import { HeaderSearch } from "@/components/search/header-search";
+import { ThemeSelector } from "@/components/layout/theme-selector";
 import { cn } from "@/lib/utils";
 
 type AppHeaderProps = {
@@ -38,6 +39,7 @@ export function AppHeader({ title = "Inicio", userEmail }: AppHeaderProps) {
       </div>
       <HeaderSearch />
       <div className="flex shrink-0 items-center gap-3">
+        <ThemeSelector variant="compact" />
         {userEmail && (
           <span className="hidden max-w-[180px] truncate text-xs text-muted-foreground lg:inline">
             {userEmail}
