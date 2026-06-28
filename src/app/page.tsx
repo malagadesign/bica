@@ -85,27 +85,31 @@ export default function LandingPage() {
         </section>
       </main>
 
-      <footer className="border-t border-[var(--bica-border)] bg-[var(--bica-muted)] py-10">
+      <footer className="bica-landing-footer border-t py-10">
         <div className="mx-auto max-w-6xl px-6">
           <div className="flex flex-col justify-between gap-8 sm:flex-row sm:items-end">
             <div className="text-left">
               <div className="mb-4 flex items-center gap-3">
                 <ThemeSelector variant="compact" />
               </div>
-              <BicaLogo height={40} showDescriptor align="start" />
-              <p className="mt-4 max-w-md text-xs leading-relaxed text-muted-foreground">
+              <BicaLogo variant="inverse" height={40} showDescriptor align="start" />
+              <p className="mt-4 max-w-md text-xs leading-relaxed text-white/70">
                 {FOOTER_DISCLAIMER_SHORT}{" "}
-                <DisclaimerLink className="text-xs text-muted-foreground hover:text-primary" />
+                <DisclaimerLink className="text-xs text-white/70 underline-offset-4 hover:text-white hover:underline" />
               </p>
-              <p className="mt-2 text-xs text-muted-foreground">
-                <Link href="/ayuda" className="hover:text-primary">
+              <p className="mt-2 text-xs text-white/60">
+                <Link href="/ayuda" className="hover:text-white">
                   Centro de Conocimiento
                 </Link>
                 {" · "}
                 © {new Date().getFullYear()} BICA. Plataforma regulatoria cosmética.
               </p>
             </div>
-            <PoweredByEternia height={64} align="end" className="self-end" />
+            <PoweredByEternia
+              height={64}
+              align="end"
+              className="self-end [&_span]:text-white/45"
+            />
           </div>
         </div>
       </footer>

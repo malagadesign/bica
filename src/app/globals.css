@@ -490,4 +490,25 @@
     filter: brightness(0) invert(1);
     opacity: 0.96;
   }
+
+  /* Landing footer — siempre oscuro (logo claro) */
+  .bica-landing-footer {
+    background: oklch(0.14 0.03 258);
+    border-color: oklch(0.24 0.03 258);
+    color: oklch(0.92 0.01 258);
+  }
+
+  .bica-landing-footer [role="group"][aria-label="Apariencia"] {
+    border-color: oklch(0.28 0.035 258);
+    background: oklch(0.20 0.03 258);
+  }
+
+  .bica-landing-footer [role="group"][aria-label="Apariencia"] button {
+    color: oklch(0.72 0.02 258);
+  }
+
+  .bica-landing-footer [role="group"][aria-label="Apariencia"] button[aria-pressed="true"] {
+    background: oklch(0.28 0.04 258);
+    color: oklch(0.95 0.01 258);
+  }
 }
