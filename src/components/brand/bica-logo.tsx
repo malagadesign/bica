@@ -40,7 +40,7 @@ export function BicaLogo({
         <span
           className={cn(
             "max-w-xs text-[0.7rem] font-normal leading-snug tracking-normal",
-            isInverse ? "text-primary-foreground/75" : "text-muted-foreground"
+            isInverse ? "text-white/75" : "text-muted-foreground"
           )}
         >
           Base de Ingredientes Cosméticos Argentinos

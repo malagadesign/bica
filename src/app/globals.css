@@ -386,6 +386,12 @@
       );
   }
 
+  .bica-auth-quote {
+    @apply max-w-lg text-3xl font-medium leading-[1.12] tracking-tight sm:text-4xl;
+    font-family: var(--font-editorial), var(--font-sans), sans-serif;
+    color: var(--hero-fg);
+  }
+
   .bica-hero-kicker {
     @apply text-xs font-medium uppercase tracking-[0.14em];
     color: var(--hero-kicker);

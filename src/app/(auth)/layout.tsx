@@ -11,34 +11,37 @@ export default function AuthLayout({
 }) {
   return (
     <div className="flex min-h-screen">
-      <div className="hidden w-[45%] flex-col justify-between bg-primary p-10 text-primary-foreground lg:flex">
-        <BicaLogo variant="inverse" showDescriptor priority />
-        <div className="space-y-8">
-          <blockquote className="font-serif text-2xl font-medium leading-snug tracking-tight text-primary-foreground/95">
+      <div className="bica-hero-gradient hidden w-[45%] flex-col justify-between p-10 lg:flex">
+        <BicaLogo variant="inverse" showDescriptor priority align="start" />
+        <div className="space-y-10">
+          <blockquote className="bica-auth-quote">
             &ldquo;La normativa cosmética, clara y trazable para quienes
             formulan con responsabilidad.&rdquo;
           </blockquote>
-          <ul className="space-y-4 text-sm text-primary-foreground/75">
+          <ul className="space-y-4 text-sm" style={{ color: "var(--hero-muted)" }}>
             <li className="flex items-center gap-3">
-              <Shield className="size-4 shrink-0" />
+              <Shield className="size-4 shrink-0 opacity-90" />
               Documentos normativos vinculados a cada regla
             </li>
             <li className="flex items-center gap-3">
-              <Scale className="size-4 shrink-0" />
+              <Scale className="size-4 shrink-0 opacity-90" />
               Estado regulatorio por ingrediente
             </li>
             <li className="flex items-center gap-3">
-              <BookOpen className="size-4 shrink-0" />
+              <BookOpen className="size-4 shrink-0 opacity-90" />
               Listados Argentina / MERCOSUR
             </li>
           </ul>
         </div>
-        <p className="text-xs text-primary-foreground/50">
+        <p
+          className="text-xs"
+          style={{ color: "color-mix(in oklch, var(--hero-fg), transparent 45%)" }}
+        >
           Plataforma oficial BICA
         </p>
       </div>
 
-      <div className="flex flex-1 flex-col items-center justify-center px-6 py-12">
+      <div className="flex flex-1 flex-col items-center justify-center bg-background px-6 py-12">
         <div className="mb-8 lg:hidden">
           <Link href="/">
             <BicaLogo showDescriptor priority />
