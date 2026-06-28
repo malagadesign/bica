@@ -8,11 +8,13 @@ import {
   getContentRevisions,
   getIngredientEditorData,
   transitionIngredientStatus,
+  archiveIngredient,
+  restoreIngredient,
 } from "@/modules/editorial";
 import { AppHeader } from "@/components/layout/app-header";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { EditorialTabNav } from "@/components/editorial/tab-nav";
-import { WorkflowActions } from "@/components/editorial/workflow-actions";
+import { IngredientWorkflowActions } from "@/components/editorial/ingredient-workflow-actions";
 import { IngredientGeneralForm } from "@/components/editorial/ingredient-general-form";
 import { RegulatoryTimeline } from "@/components/knowledge/regulatory-timeline";
 import { IngredientKnowledgeHeader } from "@/components/knowledge/ingredient-knowledge-header";
@@ -108,11 +110,13 @@ export default async function AdminIngredientEditorPage({
             />
           </div>
 
-          <WorkflowActions
-            entityId={id}
-            entityType="ingredient"
+          <IngredientWorkflowActions
+            ingredientId={id}
             status={ingredient.editorial_status}
+            isActive={ingredient.is_active}
             onTransition={transitionIngredientStatus}
+            onArchive={archiveIngredient}
+            onRestore={restoreIngredient}
           />
 
           <Suspense fallback={null}>

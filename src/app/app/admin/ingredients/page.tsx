@@ -15,7 +15,7 @@ import { formatLastUpdated } from "@/lib/format-date";
 export const dynamic = "force-dynamic";
 
 type Props = {
-  searchParams: Promise<{ status?: string; q?: string }>;
+  searchParams: Promise<{ status?: string; q?: string; archived?: string }>;
 };
 
 export default async function AdminIngredientsPage({ searchParams }: Props) {
@@ -30,9 +30,11 @@ export default async function AdminIngredientsPage({ searchParams }: Props) {
 
   const sp = await searchParams;
   const status = sp.status as EditorialStatus | undefined;
+  const archivedOnly = sp.archived === "1";
   const items = await listAdminIngredients(supabase, {
     status,
     q: sp.q,
+    archivedOnly,
   });
 
   return (
@@ -58,15 +60,19 @@ export default async function AdminIngredientsPage({ searchParams }: Props) {
 
           <div className="flex flex-wrap gap-2 text-sm">
             {[
-              { label: "Todos", href: "/app/admin/ingredients" },
+              { label: "Activas", href: "/app/admin/ingredients" },
               { label: "Borradores", href: "/app/admin/ingredients?status=draft" },
               {
                 label: "En revisión",
                 href: "/app/admin/ingredients?status=ready_for_review",
               },
               {
-                label: "Publicados",
+                label: "Publicadas",
                 href: "/app/admin/ingredients?status=published",
+              },
+              {
+                label: "Retiradas",
+                href: "/app/admin/ingredients?archived=1",
               },
             ].map((f) => (
               <Link
@@ -85,17 +91,19 @@ export default async function AdminIngredientsPage({ searchParams }: Props) {
                 icon={FlaskConical}
                 title="No hay fichas en este filtro"
                 description={
-                  status
-                    ? "No hay ingredientes con este estado editorial. Probá otro filtro o creá contenido desde una ficha existente."
-                    : "Todavía no hay ingredientes en el panel editorial."
+                  archivedOnly
+                    ? "No hay fichas retiradas de consulta pública."
+                    : status
+                      ? "No hay ingredientes con este estado editorial. Probá otro filtro."
+                      : "Todavía no hay ingredientes activos en el panel editorial."
                 }
                 action={
-                  status ? (
+                  status || archivedOnly ? (
                     <Link
                       href="/app/admin/ingredients"
                       className="text-sm font-medium underline-offset-4 hover:underline"
                     >
-                      Ver todas las fichas
+                      Ver fichas activas
                     </Link>
                   ) : undefined
                 }
@@ -121,6 +129,11 @@ export default async function AdminIngredientsPage({ searchParams }: Props) {
                 </div>
                 <div className="flex flex-wrap gap-2">
                   <EditorialStatusBadge status={item.editorial_status} />
+                  {!item.is_active && (
+                    <span className="rounded-md bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
+                      Retirada
+                    </span>
+                  )}
                   {item.needsReview && <NeedsReviewBadge />}
                 </div>
               </Link>

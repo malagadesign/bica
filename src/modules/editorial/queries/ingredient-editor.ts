@@ -7,6 +7,7 @@ export type AdminIngredientListItem = {
   inci_name: string | null;
   cas_number: string | null;
   editorial_status: EditorialStatus;
+  is_active: boolean;
   ruleCount: number;
   needsReview: boolean;
   updated_at: string;
@@ -14,20 +15,29 @@ export type AdminIngredientListItem = {
 
 export async function listAdminIngredients(
   supabase: SupabaseClient,
-  options: { status?: EditorialStatus; q?: string } = {}
+  options: {
+    status?: EditorialStatus;
+    q?: string;
+    archivedOnly?: boolean;
+  } = {}
 ): Promise<AdminIngredientListItem[]> {
   let query = supabase
     .from("ingredients")
     .select(
       `
       id, inci_name, chemical_name, cas_number, color_index,
-      editorial_status, updated_at,
+      editorial_status, is_active, updated_at,
       ingredient_rules ( id, needs_review )
     `
     )
-    .eq("is_active", true)
     .order("updated_at", { ascending: false })
     .limit(100);
+
+  if (options.archivedOnly) {
+    query = query.eq("is_active", false);
+  } else {
+    query = query.eq("is_active", true);
+  }
 
   if (options.status) {
     query = query.eq("editorial_status", options.status);
@@ -54,6 +64,7 @@ export async function listAdminIngredients(
         inci_name: row.inci_name,
         cas_number: row.cas_number,
         editorial_status: row.editorial_status as EditorialStatus,
+        is_active: row.is_active !== false,
         ruleCount: ruleList.length,
         needsReview: ruleList.some((r) => r.needs_review),
         updated_at: row.updated_at,
@@ -78,6 +89,7 @@ export type IngredientEditorData = {
   einecs: string | null;
   function: string | null;
   notes: string | null;
+  is_active: boolean;
   editorial_status: EditorialStatus;
   published_at: string | null;
   editorial_updated_at: string | null;
@@ -101,7 +113,7 @@ export async function getIngredientEditorData(
     .select(
       `
       id, inci_name, chemical_name, cas_number, color_index, einecs,
-      function, notes, editorial_status, published_at, editorial_updated_at,
+      function, notes, is_active, editorial_status, published_at, editorial_updated_at,
       ingredient_synonyms ( id, synonym, synonym_type ),
       ingredient_rules (
         id, rule_status, needs_review, editorial_status,
@@ -136,6 +148,7 @@ export async function getIngredientEditorData(
     einecs: ingredient.einecs,
     function: ingredient.function,
     notes: ingredient.notes,
+    is_active: ingredient.is_active !== false,
     editorial_status: ingredient.editorial_status as EditorialStatus,
     published_at: ingredient.published_at,
     editorial_updated_at: ingredient.editorial_updated_at,

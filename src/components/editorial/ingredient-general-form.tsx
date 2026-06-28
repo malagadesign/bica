@@ -91,8 +91,11 @@ export function IngredientGeneralForm({ ingredient }: IngredientGeneralFormProps
       )}
 
       <Button type="submit" disabled={pending}>
-        {pending ? "Guardando borrador…" : "Guardar borrador"}
+        {pending ? "Guardando…" : "Guardar cambios"}
       </Button>
+      <p className="text-xs text-muted-foreground">
+        Al guardar, la ficha vuelve a borrador hasta que la publiques nuevamente.
+      </p>
     </form>
   );
 }

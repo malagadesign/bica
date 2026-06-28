@@ -1,6 +1,10 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { getIngredientDisplayName } from "@/lib/ingredient-display";
 import {
+  isPubliclyVisibleRule,
+  PUBLIC_EDITORIAL_STATUS,
+} from "@/lib/editorial/public-visibility";
+import {
   deriveJurisdictions,
   deriveRegulatoryCategory,
 } from "@/lib/regulatory-summary";
@@ -159,9 +163,12 @@ function buildTimeline(
 
 export async function getIngredientKnowledgeProfile(
   supabase: SupabaseClient,
-  id: string
+  id: string,
+  options: { publicOnly?: boolean } = {}
 ): Promise<IngredientKnowledgeProfile | null> {
-  const { data: ingredient, error } = await supabase
+  const { publicOnly = false } = options;
+
+  let query = supabase
     .from("ingredients")
     .select(
       `
@@ -171,6 +178,7 @@ export async function getIngredientKnowledgeProfile(
       ingredient_synonyms ( synonym, synonym_type ),
       ingredient_rules (
         id, rule_status, needs_review, review_reason, entry_number_ar,
+        is_active, editorial_status,
         created_at, updated_at,
         regulatory_lists ( id, name, code ),
         regulatory_documents (
@@ -178,15 +186,20 @@ export async function getIngredientKnowledgeProfile(
         ),
         regulatory_authorities ( country, region, name ),
         restrictions (
-          id, created_at, updated_at,
+          id, created_at, updated_at, is_active,
           max_concentration, concentration_unit,
           limitation_text, warning_text
         )
       )
     `
     )
-    .eq("id", id)
-    .maybeSingle();
+    .eq("id", id);
+
+  if (publicOnly) {
+    query = query.eq("is_active", true).eq("editorial_status", PUBLIC_EDITORIAL_STATUS);
+  }
+
+  const { data: ingredient, error } = await query.maybeSingle();
 
   if (error) throw error;
   if (!ingredient) return null;
@@ -197,6 +210,8 @@ export async function getIngredientKnowledgeProfile(
     needs_review: boolean;
     review_reason: string | null;
     entry_number_ar: string | null;
+    is_active?: boolean | null;
+    editorial_status?: string | null;
     created_at: string;
     updated_at: string;
     regulatory_lists: { id: string; name: string; code: string } | { id: string; name: string; code: string }[] | null;
@@ -210,15 +225,21 @@ export async function getIngredientKnowledgeProfile(
       region: string | null;
       name: string;
     }[] | null;
-    restrictions: KnowledgeRule["restrictions"];
+    restrictions: (KnowledgeRule["restrictions"][number] & { is_active?: boolean | null })[];
   };
 
-  const rulesRaw = (ingredient.ingredient_rules ?? []) as unknown as RuleRow[];
+  const rulesRawAll = (ingredient.ingredient_rules ?? []) as unknown as RuleRow[];
+  const rulesRaw = publicOnly
+    ? rulesRawAll.filter((rule) => isPubliclyVisibleRule(rule))
+    : rulesRawAll;
 
   const rules: KnowledgeRule[] = rulesRaw.map((rule) => {
     const list = unwrapJoin(rule.regulatory_lists);
     const doc = unwrapJoin(rule.regulatory_documents);
-    const restrictions = rule.restrictions ?? [];
+    const restrictionsAll = rule.restrictions ?? [];
+    const restrictions = publicOnly
+      ? restrictionsAll.filter((r) => r.is_active !== false)
+      : restrictionsAll;
 
     return {
       id: rule.id,
@@ -266,18 +287,26 @@ export async function getIngredientKnowledgeProfile(
 
   let relatedIngredients: RelatedIngredient[] = [];
   if (listIds.length > 0) {
-    const { data: relatedRules } = await supabase
+    let relatedQuery = supabase
       .from("ingredient_rules")
       .select(
         `
-        id, rule_status, ingredient_id,
-        ingredients ( id, inci_name, chemical_name, cas_number, color_index ),
+        id, rule_status, ingredient_id, is_active, editorial_status,
+        ingredients ( id, inci_name, chemical_name, cas_number, color_index, is_active, editorial_status ),
         regulatory_lists ( name )
       `
       )
       .in("list_id", listIds)
       .neq("ingredient_id", id)
       .limit(20);
+
+    if (publicOnly) {
+      relatedQuery = relatedQuery
+        .eq("is_active", true)
+        .eq("editorial_status", PUBLIC_EDITORIAL_STATUS);
+    }
+
+    const { data: relatedRules } = await relatedQuery;
 
     const seen = new Set<string>();
     relatedIngredients = (relatedRules ?? [])
@@ -289,12 +318,20 @@ export async function getIngredientKnowledgeProfile(
             chemical_name: string | null;
             cas_number: string | null;
             color_index: string | null;
+            is_active?: boolean | null;
+            editorial_status?: string | null;
           } | null
         );
         const list = unwrapJoin(
           row.regulatory_lists as unknown as { name: string } | null
         );
         if (!ing || seen.has(ing.id)) return null;
+        if (
+          publicOnly &&
+          (ing.is_active === false || ing.editorial_status !== PUBLIC_EDITORIAL_STATUS)
+        ) {
+          return null;
+        }
         seen.add(ing.id);
         const status = derivePrimaryStatus([row.rule_status as string]);
         return {

@@ -1,5 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { getIngredientDisplayName } from "@/lib/ingredient-display";
+import { PUBLIC_EDITORIAL_STATUS } from "@/lib/editorial/public-visibility";
 import {
   derivePrimaryStatus,
   type StatusTone,
@@ -59,6 +60,8 @@ export async function getIngredientList(
     .select("id, inci_name, chemical_name, cas_number, color_index", {
       count: "exact",
     })
+    .eq("is_active", true)
+    .eq("editorial_status", PUBLIC_EDITORIAL_STATUS)
     .order("chemical_name", { ascending: true, nullsFirst: false })
     .range(from, to);
 
@@ -68,6 +71,8 @@ export async function getIngredientList(
         .from("ingredient_rules")
         .select("ingredient_id, rule_status, needs_review")
         .in("ingredient_id", ids)
+        .eq("is_active", true)
+        .eq("editorial_status", PUBLIC_EDITORIAL_STATUS)
     : { data: [] };
 
   const ruleMap = new Map<

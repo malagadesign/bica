@@ -1,0 +1,49 @@
+---
+title: Control editorial de fichas
+description: Editar, publicar, retirar y reactivar fichas de ingredientes en BICA.
+audience: admin
+category: Administración
+priority: P0
+productVersion: "1.0"
+updatedAt: "2026-06-26"
+relatedRoutes:
+  - /app/admin/ingredients
+  - /app/admin/ingredients/[id]
+---
+
+## Qué podés hacer con una ficha
+
+Desde **Administración → Fichas regulatorias** podés abrir cualquier ingrediente y:
+
+- **Editar datos generales** (INCI, CAS, notas, etc.)
+- **Cambiar el estado editorial** (borrador, revisión, publicada)
+- **Retirar de publicación** para ocultarla de la consulta pública
+- **Reactivar** una ficha retirada cuando quieras volver a trabajarla
+
+Las reglas y restricciones se editan desde cada regla en la pestaña **Reglas regulatorias**.
+
+## Guardar cambios
+
+El botón **Guardar cambios** en la pestaña General actualiza la ficha y la deja en **borrador**, aunque antes estuviera publicada. Esto evita que cambios sin revisar aparezcan en consulta.
+
+Para que los usuarios vean los cambios, usá **Publicar** después de revisar.
+
+## Retirar de publicación
+
+**Retirar de publicación** no borra datos: marca la ficha como inactiva y la saca de búsqueda y exploración. Queda visible en el filtro **Retiradas** del listado admin.
+
+Confirmá con **Confirmar retiro** para aplicar el cambio. Se registra en el historial editorial.
+
+## Reactivar
+
+Una ficha retirada puede **Reactivar ficha** desde el editor. Vuelve al panel de fichas activas; publicala cuando esté lista para consulta.
+
+## Qué ven los usuarios
+
+Solo ven ingredientes **publicados** y **activos**, con reglas publicadas. Borradores, fichas en revisión y retiradas no aparecen en `/app/ingredients` ni en búsqueda.
+
+## Buenas prácticas
+
+1. Editá en borrador, revisá reglas vinculadas y publicá cuando esté consistente.
+2. Usá **Retirar** si un ingrediente ya no debe consultarse (error grave, duplicado, etc.).
+3. Revisá el **Historial** de la ficha antes de republicar tras cambios sensibles.

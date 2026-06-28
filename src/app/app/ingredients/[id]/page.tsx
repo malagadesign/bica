@@ -37,7 +37,9 @@ export default async function IngredientKnowledgePage({ params, searchParams }: 
   const sp = await searchParams;
   const fromListSlug = sp.from;
 
-  const profile = await getIngredientKnowledgeProfile(supabase, id);
+  const profile = await getIngredientKnowledgeProfile(supabase, id, {
+    publicOnly: true,
+  });
   if (!profile) notFound();
 
   const fromList = fromListSlug

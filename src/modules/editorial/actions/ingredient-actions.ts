@@ -61,7 +61,14 @@ export async function saveIngredientDraft(
     revalidatePath(`/app/admin/ingredients/${id}`);
     revalidatePath("/app/admin/ingredients");
     revalidatePath("/app/admin/workspace");
-    return { error: null, success: "Borrador guardado." };
+    revalidatePath("/app/ingredients");
+    revalidatePath(`/app/ingredients/${id}`);
+    revalidatePath("/app/search");
+    return {
+      error: null,
+      success:
+        "Cambios guardados. La ficha quedó en borrador hasta que vuelvas a publicarla.",
+    };
   } catch (err) {
     return {
       error: err instanceof Error ? err.message : "Error al guardar",
@@ -109,11 +116,108 @@ export async function transitionIngredientStatus(
     });
 
     revalidatePath(`/app/admin/ingredients/${ingredientId}`);
+    revalidatePath("/app/admin/ingredients");
     revalidatePath("/app/admin/workspace");
+    revalidatePath("/app/ingredients");
+    revalidatePath(`/app/ingredients/${ingredientId}`);
+    revalidatePath("/app/search");
     return { error: null, success: summary };
   } catch (err) {
     return {
       error: err instanceof Error ? err.message : "Error en transición",
+      success: null,
+    };
+  }
+}
+
+export async function archiveIngredient(
+  ingredientId: string
+): Promise<EditorialActionState> {
+  try {
+    await withAdminEditorial(async (adminId, supabase) => {
+      const { error } = await supabase
+        .from("ingredients")
+        .update({
+          is_active: false,
+          editorial_status: "draft",
+          editorial_updated_at: new Date().toISOString(),
+          editorial_updated_by: adminId,
+        })
+        .eq("id", ingredientId);
+
+      if (error) throw error;
+
+      const snapshot = await getIngredientEditorData(supabase, ingredientId);
+      if (snapshot) {
+        await insertContentRevision(supabase, {
+          entityType: "ingredient",
+          entityId: ingredientId,
+          editorialStatus: "draft",
+          changeSummary: "Ficha retirada de consulta pública",
+          snapshot: snapshot as unknown as Record<string, unknown>,
+          createdBy: adminId,
+        });
+      }
+    });
+
+    revalidatePath(`/app/admin/ingredients/${ingredientId}`);
+    revalidatePath("/app/admin/ingredients");
+    revalidatePath("/app/admin/workspace");
+    revalidatePath("/app/ingredients");
+    revalidatePath(`/app/ingredients/${ingredientId}`);
+    revalidatePath("/app/search");
+    return {
+      error: null,
+      success: "Ficha retirada de consulta pública.",
+    };
+  } catch (err) {
+    return {
+      error: err instanceof Error ? err.message : "Error al retirar ficha",
+      success: null,
+    };
+  }
+}
+
+export async function restoreIngredient(
+  ingredientId: string
+): Promise<EditorialActionState> {
+  try {
+    await withAdminEditorial(async (adminId, supabase) => {
+      const { error } = await supabase
+        .from("ingredients")
+        .update({
+          is_active: true,
+          editorial_updated_at: new Date().toISOString(),
+          editorial_updated_by: adminId,
+        })
+        .eq("id", ingredientId);
+
+      if (error) throw error;
+
+      const snapshot = await getIngredientEditorData(supabase, ingredientId);
+      if (snapshot) {
+        await insertContentRevision(supabase, {
+          entityType: "ingredient",
+          entityId: ingredientId,
+          editorialStatus: snapshot.editorial_status,
+          changeSummary: "Ficha reactivada en panel editorial",
+          snapshot: snapshot as unknown as Record<string, unknown>,
+          createdBy: adminId,
+        });
+      }
+    });
+
+    revalidatePath(`/app/admin/ingredients/${ingredientId}`);
+    revalidatePath("/app/admin/ingredients");
+    revalidatePath("/app/admin/workspace");
+    return {
+      error: null,
+      success:
+        "Ficha reactivada. Publicala nuevamente cuando esté lista para consulta.",
+    };
+  } catch (err) {
+    return {
+      error: err instanceof Error ? err.message : "Error al reactivar ficha",
       success: null,
     };
   }

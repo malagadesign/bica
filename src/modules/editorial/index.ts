@@ -23,6 +23,8 @@ export { listAdminDocuments, getDocumentEditorData } from "./queries/document-ed
 export {
   saveIngredientDraft,
   transitionIngredientStatus,
+  archiveIngredient,
+  restoreIngredient,
 } from "./actions/ingredient-actions";
 
 export {
