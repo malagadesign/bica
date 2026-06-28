@@ -19,7 +19,11 @@ export function IngredientGeneralForm({ ingredient }: IngredientGeneralFormProps
   );
 
   return (
-    <form action={formAction} className="space-y-6">
+    <form
+      key={ingredient.editorial_updated_at ?? ingredient.id}
+      action={formAction}
+      className="space-y-6"
+    >
       <input type="hidden" name="id" value={ingredient.id} />
 
       <div className="grid gap-4 sm:grid-cols-2">
